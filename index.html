@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DukanSlip — Invoice & Receipt Builder</title>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#1f2530;
+    --ink-soft:#5b6472;
+    --workspace:#eef1f4;
+    --paper:#fffdf8;
+    --accent:#0e7c7b;
+    --accent-dark:#0a5f5e;
+    --accent-soft:#e4f4f3;
+    --amber:#dc9a2e;
+    --amber-soft:#fbf0db;
+    --danger:#d9483f;
+    --good:#1f9d55;
+    --line:#dfe3e8;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--workspace);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3,h4,h5,.brand-font{ font-family:'Sora',system-ui,sans-serif; }
+
+  /* ---------- Navbar ---------- */
+  .app-navbar{
+    background:var(--ink);
+    color:#fff;
+    padding:.85rem 1.25rem;
+  }
+  .app-navbar .brand{
+    font-family:'Sora',sans-serif;
+    font-weight:700;
+    font-size:1.25rem;
+    letter-spacing:.2px;
+  }
+  .app-navbar .brand .dot{ color:var(--amber); }
+  .nav-icon-btn{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    color:#fff;
+    border-radius:10px;
+    padding:.4rem .7rem;
+    font-size:.85rem;
+  }
+  .nav-icon-btn:hover{ background:rgba(255,255,255,.16); color:#fff; }
+  .bt-pill{
+    font-size:.72rem;
+    padding:.3rem .6rem;
+    border-radius:999px;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.15);
+    display:inline-flex;
+    align-items:center;
+    gap:.35rem;
+  }
+  .bt-pill .dot-status{ width:7px; height:7px; border-radius:50%; background:#7b8595; display:inline-block; }
+  .bt-pill.connected .dot-status{ background:var(--good); box-shadow:0 0 0 3px rgba(31,157,85,.25); }
+
+  /* ---------- Cards / layout ---------- */
+  .builder-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1.1rem 1.2rem;
+    margin-bottom:1rem;
+  }
+  .builder-card h6{
+    font-family:'Sora',sans-serif;
+    font-weight:600;
+    font-size:.78rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--ink-soft);
+    margin-bottom:.9rem;
+    display:flex;
+    align-items:center;
+    gap:.45rem;
+  }
+  .builder-card h6 i{ color:var(--accent); }
+
+  .form-control,.form-select{
+    border-color:var(--line);
+    font-size:.92rem;
+  }
+  .form-control:focus,.form-select:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 .2rem var(--accent-soft);
+  }
+  label.form-label{ font-size:.78rem; font-weight:600; color:var(--ink-soft); }
+
+  .btn-brand{ background:var(--accent); border:1px solid var(--accent); color:#fff; font-weight:600; }
+  .btn-brand:hover{ background:var(--accent-dark); border-color:var(--accent-dark); color:#fff; }
+  .btn-outline-brand{ border:1px solid var(--accent); color:var(--accent); font-weight:600; background:transparent; }
+  .btn-outline-brand:hover{ background:var(--accent); color:#fff; }
+  .btn-amber{ background:var(--amber); border:1px solid var(--amber); color:#fff; font-weight:600; }
+  .btn-amber:hover{ background:#c2861f; border-color:#c2861f; color:#fff; }
+
+  /* ---------- Cart table ---------- */
+  .cart-table{ font-size:.88rem; }
+  .cart-table th{
+    font-size:.7rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-soft); border-bottom:1px solid var(--line); font-weight:700;
+  }
+  .cart-table td{ vertical-align:middle; border-bottom:1px solid var(--line); }
+  .item-discount-tag{
+    font-size:.7rem; background:var(--amber-soft); color:#9c6a14;
+    padding:.1rem .4rem; border-radius:6px; display:inline-block; margin-top:.15rem;
+  }
+  .empty-cart{
+    text-align:center; padding:2rem 1rem; color:var(--ink-soft); font-size:.88rem;
+  }
+  .empty-cart i{ font-size:1.8rem; color:var(--line); display:block; margin-bottom:.5rem; }
+
+  .row-action-btn{
+    width:28px; height:28px; border-radius:7px; display:inline-flex; align-items:center; justify-content:center;
+    border:1px solid var(--line); background:#fff; color:var(--ink-soft);
+  }
+  .row-action-btn:hover{ background:var(--workspace); }
+  .row-action-btn.danger:hover{ color:var(--danger); border-color:var(--danger); }
+
+  /* ---------- Template switcher ---------- */
+  .tmpl-tabs{ display:flex; gap:.5rem; margin-bottom:.9rem; }
+  .tmpl-tab{
+    flex:1; text-align:center; padding:.5rem .4rem; border-radius:10px;
+    border:1px solid var(--line); background:#fff; font-size:.78rem; font-weight:600;
+    color:var(--ink-soft); cursor:pointer; transition:.15s;
+  }
+  .tmpl-tab.active{ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-dark); }
+  .tmpl-tab small{ display:block; font-weight:400; font-size:.68rem; color:var(--ink-soft); }
+
+  .paper-size-row{ display:flex; gap:.4rem; margin-bottom:1rem; }
+  .paper-size-row .form-select{ font-size:.8rem; padding:.3rem .6rem; }
+
+  /* ---------- Receipt preview shell ---------- */
+  .preview-shell{
+    background:repeating-linear-gradient(45deg, #e4e8ec 0 10px, #eaedf1 10px 20px);
+    border-radius:var(--radius);
+    padding:1.6rem .6rem 2.2rem;
+    display:flex;
+    justify-content:center;
+    min-height:520px;
+  }
+  .receipt-paper{
+    background:var(--paper);
+    box-shadow:0 18px 38px -14px rgba(20,30,40,.35);
+    position:relative;
+    margin:0 auto;
+    overflow:hidden;
+  }
+  .paper-58{ width:300px; }
+  .paper-80{ width:340px; }
+  .paper-a4{ width:380px; }
+
+  /* shared receipt typography helpers */
+  .rc-mono{ font-family:'JetBrains Mono',monospace; }
+  .rc-muted{ color:var(--ink-soft); }
+  .rc-total-row{ font-weight:700; }
+  .rc-dashed{ border-top:1px dashed #c7ccd2; }
+  .rc-status-pill{
+    font-size:.66rem; font-weight:700; padding:.15rem .55rem; border-radius:999px; letter-spacing:.04em;
+  }
+  .rc-status-paid{ background:#e3f6ea; color:var(--good); }
+  .rc-status-unpaid{ background:#fde9e7; color:var(--danger); }
+
+  .barcode-wrap svg rect{ shape-rendering:crispEdges; }
+
+  /* ===== Template: Modern ===== */
+  .tmpl-modern{ border-radius:16px; padding:1.5rem 1.4rem; }
+  .tmpl-modern .rc-eyebrow{ font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); font-weight:700;}
+  .tmpl-modern .rc-title{ font-family:'Sora',sans-serif; font-weight:700; font-size:1.25rem; }
+  .tmpl-modern .rc-code-badge{
+    background:var(--workspace); border:1px solid var(--line); border-radius:8px;
+    padding:.25rem .55rem; font-size:.72rem; font-weight:700; letter-spacing:.04em; font-family:'JetBrains Mono',monospace;
+  }
+  .tmpl-modern .rc-meta-row{ display:flex; justify-content:space-between; padding:.45rem 0; border-bottom:1px solid var(--line); font-size:.84rem; }
+  .tmpl-modern .rc-meta-row span.lbl{ color:var(--ink-soft); display:flex; align-items:center; gap:.4rem; }
+  .tmpl-modern .rc-meta-row span.lbl i{ color:var(--accent); width:16px; text-align:center; }
+  .tmpl-modern .rc-item-row{ display:flex; justify-content:space-between; padding:.4rem 0; font-size:.83rem; border-bottom:1px dashed var(--line); }
+  .tmpl-modern .rc-item-name{ font-weight:600; }
+  .tmpl-modern .rc-item-sub{ font-size:.72rem; color:var(--ink-soft); }
+  .tmpl-modern .rc-note-box{
+    background:var(--amber-soft); border-left:3px solid var(--amber); border-radius:8px;
+    padding:.6rem .75rem; font-size:.78rem; color:#7a5410; margin-top:.9rem;
+  }
+
+  /* ===== Template: Ticket ===== */
+  .tmpl-ticket{ font-family:'JetBrains Mono',monospace; padding:1.6rem 1.2rem 1.4rem; }
+  .tmpl-ticket::before, .tmpl-ticket::after{
+    content:""; position:absolute; left:0; right:0; height:12px;
+    background:radial-gradient(circle at 7px 6px, var(--workspace) 5px, transparent 5.5px);
+    background-size:14px 12px;
+  }
+  .tmpl-ticket::before{ top:-1px; }
+  .tmpl-ticket::after{ bottom:-1px; }
+  .tmpl-ticket .rc-head{ text-align:center; font-weight:700; font-size:.85rem; letter-spacing:.05em; margin-bottom:.3rem;}
+  .tmpl-ticket .rc-sub{ text-align:center; font-size:.7rem; color:var(--ink-soft); margin-bottom:.7rem; }
+  .tmpl-ticket .rc-codebox{
+    border:1px dashed #c7ccd2; border-radius:6px; text-align:center; padding:.5rem; margin:.7rem 0; font-size:.8rem; font-weight:700;
+  }
+  .tmpl-ticket .rc-line{ display:flex; justify-content:space-between; font-size:.74rem; padding:.18rem 0; }
+  .tmpl-ticket .rc-item-block{ margin-bottom:.35rem; }
+  .tmpl-ticket .rc-item-top{ display:flex; justify-content:space-between; font-size:.78rem; font-weight:600; }
+  .tmpl-ticket .rc-item-bottom{ display:flex; justify-content:space-between; font-size:.68rem; color:var(--ink-soft); }
+
+  /* ===== Template: Slip (bank style) ===== */
+  .tmpl-slip{ padding:0 0 1.3rem; border-radius:16px; }
+  .tmpl-slip .rc-bar{
+    background:linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color:#fff; padding:1rem 1.2rem .9rem; border-radius:16px 16px 0 0;
+  }
+  .tmpl-slip .rc-bar .rc-biz{ font-family:'Sora',sans-serif; font-weight:700; font-size:1.05rem; }
+  .tmpl-slip .rc-bar .rc-sub{ font-size:.72rem; opacity:.85; }
+  .tmpl-slip .rc-body{ padding:1rem 1.2rem; }
+  .tmpl-slip .rc-field-row{ display:flex; justify-content:space-between; padding:.4rem 0; border-bottom:1px solid var(--line); font-size:.82rem; }
+  .tmpl-slip .rc-field-row .lbl{ color:var(--ink-soft); }
+  .tmpl-slip .rc-item-row{ display:flex; justify-content:space-between; font-size:.8rem; padding:.32rem 0; border-bottom:1px dashed var(--line); }
+  .tmpl-slip .rc-amount-box{
+    background:var(--workspace); border-radius:10px; padding:.9rem 1rem; margin-top:.9rem; text-align:center;
+  }
+  .tmpl-slip .rc-amount-box .amt{ font-family:'Sora',sans-serif; font-weight:800; font-size:1.6rem; color:var(--ink); }
+  .tmpl-slip .rc-amount-box .words{ font-size:.68rem; color:var(--ink-soft); margin-top:.25rem; text-transform:uppercase; letter-spacing:.03em; }
+
+  .rc-footer-note{ text-align:center; font-size:.7rem; color:var(--ink-soft); margin-top:1rem; padding-top:.8rem; border-top:1px dashed var(--line); }
+
+  /* ---------- Sticky preview col ---------- */
+  @media (min-width:992px){
+    .sticky-col{ position:sticky; top:1rem; }
+  }
+
+  /* ---------- Toast ---------- */
+  .toast{ font-size:.85rem; }
+
+  /* ---------- Print ---------- */
+  @media print{
+    body *{ visibility:hidden; }
+    #receiptPreview, #receiptPreview *{ visibility:visible; }
+    #receiptPreview{ position:absolute; top:0; left:0; box-shadow:none !important; }
+    @page{ margin:6mm; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="app-navbar d-flex align-items-center justify-content-between flex-wrap gap-2">
+  <span class="brand"><i class="bi bi-receipt"></i> Dukan<span class="dot">Slip</span></span>
+  <div class="d-flex align-items-center gap-2">
+    <span class="bt-pill" id="btStatusPill"><span class="dot-status"></span><span id="btStatusText">Printer not connected</span></span>
+    <button class="nav-icon-btn" data-bs-toggle="modal" data-bs-target="#historyModal"><i class="bi bi-clock-history"></i> History</button>
+    <button class="nav-icon-btn" data-bs-toggle="offcanvas" data-bs-target="#settingsPanel"><i class="bi bi-gear"></i> Settings</button>
+  </div>
+</nav>
+
+<div class="container-fluid py-3 px-3 px-md-4">
+  <div class="row g-3">
+
+    <!-- ============ LEFT: BUILDER ============ -->
+    <div class="col-lg-7">
+
+      <div class="builder-card">
+        <h6><i class="bi bi-person-circle"></i> Sale details</h6>
+        <div class="row g-2">
+          <div class="col-sm-6">
+            <label class="form-label">Customer name (optional)</label>
+            <input type="text" id="customerName" class="form-control" placeholder="Walk-in customer">
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label">Status</label>
+            <select id="saleStatus" class="form-select">
+              <option value="paid" selected>Paid</option>
+              <option value="unpaid">Unpaid / On account</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Note (printed on receipt)</label>
+            <input type="text" id="saleNote" class="form-control" placeholder="e.g. Thank you for shopping with us!">
+          </div>
+        </div>
+      </div>
+
+      <div class="builder-card">
+        <h6><i class="bi bi-plus-circle"></i> Add item</h6>
+        <form id="addItemForm" class="row g-2 align-items-end">
+          <div class="col-12 col-sm-5">
+            <label class="form-label">Product name</label>
+            <input type="text" id="itemName" class="form-control" list="catalogList" placeholder="e.g. Cold drink 1.5L" required>
+            <datalist id="catalogList"></datalist>
+          </div>
+          <div class="col-4 col-sm-2">
+            <label class="form-label">Qty</label>
+            <input type="number" id="itemQty" class="form-control" value="1" min="0.01" step="0.01" required>
+          </div>
+          <div class="col-8 col-sm-2">
+            <label class="form-label">Price</label>
+            <input type="number" id="itemPrice" class="form-control" placeholder="0.00" min="0" step="0.01" required>
+          </div>
+          <div class="col-7 col-sm-2">
+            <label class="form-label">Item discount</label>
+            <div class="input-group">
+              <input type="number" id="itemDiscountValue" class="form-control" placeholder="0" min="0" step="0.01">
+              <select id="itemDiscountType" class="form-select" style="max-width:62px;">
+                <option value="percent">%</option>
+                <option value="fixed">Rs</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-5 col-sm-1">
+            <button type="submit" class="btn btn-brand w-100" id="addItemBtn"><i class="bi bi-plus-lg"></i></button>
+          </div>
+        </form>
+      </div>
+
+      <div class="builder-card">
+        <h6><i class="bi bi-cart3"></i> Cart</h6>
+        <div class="table-responsive">
+          <table class="table cart-table mb-0">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="text-center">Qty</th>
+                <th class="text-end">Price</th>
+                <th class="text-end">Total</th>
+                <th class="text-end" style="width:70px;"></th>
+              </tr>
+            </thead>
+            <tbody id="cartBody"></tbody>
+          </table>
+        </div>
+        <div id="emptyCartMsg" class="empty-cart">
+          <i class="bi bi-bag"></i>
+          No items yet — add a product above to get started.
+        </div>
+      </div>
+
+      <div class="builder-card">
+        <h6><i class="bi bi-percent"></i> Overall adjustments</h6>
+        <div class="row g-2">
+          <div class="col-6 col-sm-4">
+            <label class="form-label">Overall discount</label>
+            <div class="input-group">
+              <input type="number" id="overallDiscountValue" class="form-control" placeholder="0" min="0" step="0.01" value="0">
+              <select id="overallDiscountType" class="form-select" style="max-width:62px;">
+                <option value="percent">%</option>
+                <option value="fixed">Rs</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-6 col-sm-4">
+            <label class="form-label">Tax / GST %</label>
+            <input type="number" id="taxPercent" class="form-control" placeholder="0" min="0" step="0.01" value="0">
+          </div>
+          <div class="col-12 col-sm-4 d-flex align-items-end">
+            <button class="btn btn-outline-secondary w-100" id="newSaleBtn"><i class="bi bi-arrow-counterclockwise"></i> New sale</button>
+          </div>
+        </div>
+
+        <div class="rc-dashed mt-3 pt-3">
+          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Subtotal</span><span id="sumSubtotal">Rs0.00</span></div>
+          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Discount</span><span id="sumDiscount">-Rs0.00</span></div>
+          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Tax</span><span id="sumTax">Rs0.00</span></div>
+          <div class="d-flex justify-content-between fw-bold fs-5 mt-1"><span>Total</span><span id="sumTotal">Rs0.00</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ============ RIGHT: PREVIEW ============ -->
+    <div class="col-lg-5">
+      <div class="sticky-col">
+
+        <div class="builder-card">
+          <h6><i class="bi bi-palette"></i> Template</h6>
+          <div class="tmpl-tabs">
+            <div class="tmpl-tab active" data-tmpl="modern">Modern<small>Card style</small></div>
+            <div class="tmpl-tab" data-tmpl="ticket">Ticket<small>Classic stub</small></div>
+            <div class="tmpl-tab" data-tmpl="slip">Slip<small>Bank style</small></div>
+          </div>
+          <div class="paper-size-row">
+            <select id="paperSize" class="form-select">
+              <option value="58mm">58mm thermal roll</option>
+              <option value="80mm" selected>80mm thermal roll</option>
+              <option value="a4">A4 / Letter sheet</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="viewingBanner" class="alert alert-warning d-none py-2 px-3 small d-flex justify-content-between align-items-center">
+          <span><i class="bi bi-eye"></i> Viewing a saved receipt from history</span>
+          <button class="btn btn-sm btn-outline-secondary" id="backToCurrentBtn">Back to current sale</button>
+        </div>
+
+        <div class="preview-shell">
+          <div id="receiptPreview" class="receipt-paper paper-80"></div>
+        </div>
+
+        <div class="builder-card mt-3">
+          <h6><i class="bi bi-printer"></i> Print &amp; save</h6>
+          <div class="d-grid gap-2">
+            <button class="btn btn-brand" id="saveInvoiceBtn"><i class="bi bi-save"></i> Save invoice to history</button>
+            <button class="btn btn-outline-brand" id="printBtn"><i class="bi bi-printer"></i> Print (system / paired printer)</button>
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-secondary flex-fill" id="connectBtBtn"><i class="bi bi-bluetooth"></i> Pair Bluetooth printer</button>
+              <button class="btn btn-amber flex-fill" id="printBtBtn" disabled><i class="bi bi-receipt"></i> Print via Bluetooth</button>
+            </div>
+          </div>
+          <p class="small rc-muted mt-2 mb-0">
+            <i class="bi bi-info-circle"></i>
+            Most low-cost Bluetooth receipt printers pair through your phone's Bluetooth/print settings — once paired, "Print" above will list them as a printer.
+            Direct in-browser Bluetooth printing works only with printers exposing a BLE serial service, over HTTPS, on Chrome/Edge (Android or desktop).
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ SETTINGS OFFCANVAS ============ -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="settingsPanel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title brand-font">Business settings</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <form id="settingsForm">
+      <label class="form-label">Business name</label>
+      <input type="text" id="setBizName" class="form-control mb-3" placeholder="Al-Madina General Store">
+
+      <label class="form-label">Address</label>
+      <input type="text" id="setAddress" class="form-control mb-3" placeholder="Main Bazaar Road, Lahore">
+
+      <label class="form-label">Phone</label>
+      <input type="text" id="setPhone" class="form-control mb-3" placeholder="0300-0000000">
+
+      <label class="form-label">Default footer note</label>
+      <input type="text" id="setFooter" class="form-control mb-3" placeholder="Goods once sold will not be returned">
+
+      <div class="row g-2">
+        <div class="col-6">
+          <label class="form-label">Invoice prefix</label>
+          <input type="text" id="setPrefix" class="form-control mb-3" placeholder="INV">
+        </div>
+        <div class="col-6">
+          <label class="form-label">Currency symbol</label>
+          <input type="text" id="setCurrency" class="form-control mb-3" placeholder="Rs">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style="background:var(--workspace);">
+        <span class="small">Next invoice number</span>
+        <strong id="nextInvoicePreview" class="rc-mono"></strong>
+      </div>
+
+      <button type="submit" class="btn btn-brand w-100"><i class="bi bi-check2"></i> Save settings</button>
+      <button type="button" id="resetCounterBtn" class="btn btn-outline-secondary w-100 mt-2">Reset invoice counter to 1</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ HISTORY MODAL ============ -->
+<div class="modal fade" id="historyModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title brand-font">Invoice history</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr><th>Invoice</th><th>Date</th><th>Customer</th><th class="text-end">Total</th><th class="text-end">Actions</th></tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+        <p class="small rc-muted text-center mb-0" id="noHistoryMsg">No saved invoices yet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOASTS ============ -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="appToast" class="toast align-items-center text-bg-dark border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="appToastBody">Saved.</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script>
+'use strict';
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const state = {
+  settings: {
+    businessName: 'Al-Madina General Store',
+    address: 'Main Bazaar Road, Lahore',
+    phone: '0300-0000000',
+    footerNote: 'Goods once sold will not be returned.',
+    prefix: 'INV',
+    currency: 'Rs',
+    counter: 1,
+    template: 'modern',
+    paperSize: '80mm'
+  },
+  catalog: [],      // [{name, price}]
+  history: [],      // array of saved invoice snapshots
+  cart: [],         // [{id,name,qty,price,discountType,discountValue}]
+  customer: '',
+  note: '',
+  status: 'paid',
+  overallDiscount: { type: 'percent', value: 0 },
+  taxPercent: 0,
+  viewingHistoryId: null // when set, preview shows a saved invoice instead of the live cart
+};
+
+let editingItemId = null;
+let btDevice = null;
+let btCharacteristic = null;
+
+/* =========================================================
+   STORAGE HELPERS (artifact persistent storage)
+   ========================================================= */
+async function storageGet(key, fallback) {
+  try {
+    const res = await window.storage.get(key, false);
+    if (res && typeof res.value === 'string') return JSON.parse(res.value);
+    return fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+async function storageSet(key, value) {
+  try {
+    await window.storage.set(key, JSON.stringify(value), false);
+  } catch (e) {
+    console.error('Storage write failed for', key, e);
+  }
+}
+
+async function loadAll() {
+  const savedSettings = await storageGet('settings', null);
+  if (savedSettings) Object.assign(state.settings, savedSettings);
+  state.catalog = await storageGet('catalog', []);
+  state.history = await storageGet('history', []);
+}
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function uid() {
+  return 'it_' + Math.random().toString(36).slice(2, 10);
+}
+
+function fmt(n) {
+  const sym = state.settings.currency || 'Rs';
+  return sym + Number(n || 0).toFixed(2);
+}
+
+function padNumber(n, width) {
+  return String(n).padStart(width, '0');
+}
+
+function currentDraftNumber() {
+  return `${state.settings.prefix || 'INV'}-${padNumber(state.settings.counter || 1, 4)}`;
+}
+
+function nowStrings() {
+  const d = new Date();
+  return { iso: d.toISOString(), display: d.toLocaleString() };
+}
+
+/* number to words, used by the "slip" template (cheque-style amount in words) */
+function numberToWords(num) {
+  num = Math.floor(Math.abs(num || 0));
+  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+    'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  const scales = ['', 'Thousand', 'Million', 'Billion'];
+
+  function chunk(n) {
+    let s = '';
+    if (n >= 100) { s += ones[Math.floor(n / 100)] + ' Hundred '; n %= 100; }
+    if (n >= 20) { s += tens[Math.floor(n / 10)] + ' '; n %= 10; }
+    if (n > 0) s += ones[n] + ' ';
+    return s.trim();
+  }
+
+  if (num === 0) return 'Zero';
+  let parts = [];
+  let i = 0;
+  while (num > 0) {
+    const c = num % 1000;
+    if (c > 0) parts.unshift((chunk(c) + ' ' + scales[i]).trim());
+    num = Math.floor(num / 1000);
+    i++;
+  }
+  return parts.join(' ').trim();
+}
+
+/* deterministic decorative barcode (SVG) based on a string */
+function barcodeSVG(text) {
+  let bars = '';
+  let x = 2;
+  const str = String(text || 'CODE');
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charCodeAt(i);
+    const w = (c % 3) + 1;
+    const black = c % 2 === 0;
+    if (black) bars += `<rect x="${x}" y="0" width="${w}" height="36" fill="#1f2530"/>`;
+    x += w + 1;
+  }
+  return `<svg viewBox="0 0 ${x + 2} 36" width="100%" height="34" preserveAspectRatio="none">${bars}</svg>`;
+}
+
+function showToast(msg) {
+  const toastEl = document.getElementById('appToast');
+  document.getElementById('appToastBody').textContent = msg;
+  bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 2200 }).show();
+}
+
+/* =========================================================
+   CALCULATIONS
+   ========================================================= */
+function computeTotals(cart, overallDiscount, taxPercent) {
+  let subtotal = 0;
+  cart.forEach(item => {
+    const gross = Number(item.qty) * Number(item.price);
+    let disc = 0;
+    if (item.discountType === 'percent') disc = gross * (Number(item.discountValue || 0) / 100);
+    else if (item.discountType === 'fixed') disc = Number(item.discountValue || 0);
+    disc = Math.min(Math.max(disc, 0), gross);
+    item._gross = gross;
+    item._discountAmt = disc;
+    item._lineTotal = gross - disc;
+    subtotal += item._lineTotal;
+  });
+
+  let overallDiscAmt = 0;
+  if (overallDiscount.type === 'percent') overallDiscAmt = subtotal * (Number(overallDiscount.value || 0) / 100);
+  else overallDiscAmt = Number(overallDiscount.value || 0);
+  overallDiscAmt = Math.min(Math.max(overallDiscAmt, 0), subtotal);
+
+  const afterDiscount = subtotal - overallDiscAmt;
+  const taxAmt = afterDiscount * (Number(taxPercent || 0) / 100);
+  const grandTotal = afterDiscount + taxAmt;
+
+  return { subtotal, overallDiscAmt, taxAmt, grandTotal };
+}
+
+/* =========================================================
+   SNAPSHOT BUILDING (used for live preview, save, reprint)
+   ========================================================= */
+function buildInvoiceSnapshot(numberOverride) {
+  const cartCopy = state.cart.map(it => ({ ...it }));
+  const totals = computeTotals(cartCopy, state.overallDiscount, state.taxPercent);
+  const ts = nowStrings();
+  return {
+    id: numberOverride ? numberOverride : 'draft',
+    number: numberOverride || currentDraftNumber(),
+    dateISO: ts.iso,
+    dateStr: ts.display,
+    customer: state.customer || '',
+    note: state.note || '',
+    status: state.status,
+    items: cartCopy,
+    totals,
+    taxPercent: Number(state.taxPercent || 0),
+    overallDiscount: { ...state.overallDiscount },
+    template: state.settings.template,
+    paperSize: state.settings.paperSize,
+    business: {
+      name: state.settings.businessName,
+      address: state.settings.address,
+      phone: state.settings.phone,
+      footerNote: state.note || state.settings.footerNote,
+      currency: state.settings.currency
+    }
+  };
+}
+
+/* =========================================================
+   RENDER: CART TABLE
+   ========================================================= */
+function renderCart() {
+  const body = document.getElementById('cartBody');
+  const emptyMsg = document.getElementById('emptyCartMsg');
+  computeTotals(state.cart, state.overallDiscount, state.taxPercent); // refresh computed fields
+
+  if (state.cart.length === 0) {
+    body.innerHTML = '';
+    emptyMsg.classList.remove('d-none');
+  } else {
+    emptyMsg.classList.add('d-none');
+    body.innerHTML = state.cart.map(item => {
+      const discBadge = item._discountAmt > 0
+        ? `<span class="item-discount-tag">-${fmt(item._discountAmt)} discount</span>`
+        : '';
+      return `
+        <tr data-id="${item.id}">
+          <td>
+            <div>${escapeHtml(item.name)}</div>
+            ${discBadge}
+          </td>
+          <td class="text-center">${item.qty}</td>
+          <td class="text-end">${fmt(item.price)}</td>
+          <td class="text-end fw-semibold">${fmt(item._lineTotal)}</td>
+          <td class="text-end">
+            <button class="row-action-btn edit-item-btn" title="Edit" data-id="${item.id}"><i class="bi bi-pencil"></i></button>
+            <button class="row-action-btn danger remove-item-btn" title="Remove" data-id="${item.id}"><i class="bi bi-trash"></i></button>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  const totals = computeTotals(state.cart, state.overallDiscount, state.taxPercent);
+  document.getElementById('sumSubtotal').textContent = fmt(totals.subtotal);
+  document.getElementById('sumDiscount').textContent = '-' + fmt(totals.overallDiscAmt);
+  document.getElementById('sumTax').textContent = fmt(totals.taxAmt);
+  document.getElementById('sumTotal').textContent = fmt(totals.grandTotal);
+
+  renderPreview();
+}
+
+/* =========================================================
+   RENDER: RECEIPT TEMPLATES
+   ========================================================= */
+function paperClass(size) {
+  if (size === '58mm') return 'paper-58';
+  if (size === 'a4') return 'paper-a4';
+  return 'paper-80';
+}
+
+function itemsHtmlModern(items) {
+  if (items.length === 0) return `<div class="rc-item-row"><span class="rc-muted">No items added</span></div>`;
+  return items.map(it => `
+    <div class="rc-item-row">
+      <div>
+        <div class="rc-item-name">${escapeHtml(it.name)}</div>
+        <div class="rc-item-sub">${it.qty} × ${fmt(it.price)}${it._discountAmt > 0 ? ' · -' + fmt(it._discountAmt) + ' off' : ''}</div>
+      </div>
+      <div class="fw-semibold">${fmt(it._lineTotal)}</div>
+    </div>
+  `).join('');
+}
+
+function renderModern(inv) {
+  const t = inv.totals;
+  return `
+    <div class="tmpl-modern">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="rc-eyebrow">Sales Receipt</div>
+          <div class="rc-title">${escapeHtml(inv.business.name)}</div>
+        </div>
+        <span class="rc-code-badge">${escapeHtml(inv.number)}</span>
+      </div>
+      <div class="rc-item-sub mb-3">${escapeHtml(inv.business.address || '')} ${inv.business.phone ? '· ' + escapeHtml(inv.business.phone) : ''}</div>
+
+      <div class="rc-meta-row"><span class="lbl"><i class="bi bi-calendar3"></i> Date</span><span>${inv.dateStr}</span></div>
+      <div class="rc-meta-row"><span class="lbl"><i class="bi bi-person"></i> Customer</span><span>${escapeHtml(inv.customer || 'Walk-in customer')}</span></div>
+      <div class="rc-meta-row"><span class="lbl"><i class="bi bi-tag"></i> Status</span>
+        <span class="rc-status-pill ${inv.status === 'paid' ? 'rc-status-paid' : 'rc-status-unpaid'}">${inv.status === 'paid' ? 'PAID' : 'UNPAID'}</span>
+      </div>
+
+      <div class="mt-2">${itemsHtmlModern(inv.items)}</div>
+
+      <div class="rc-meta-row mt-2"><span class="lbl">Subtotal</span><span>${fmt(t.subtotal)}</span></div>
+      ${t.overallDiscAmt > 0 ? `<div class="rc-meta-row"><span class="lbl">Discount</span><span>-${fmt(t.overallDiscAmt)}</span></div>` : ''}
+      ${t.taxAmt > 0 ? `<div class="rc-meta-row"><span class="lbl">Tax (${inv.taxPercent}%)</span><span>${fmt(t.taxAmt)}</span></div>` : ''}
+      <div class="rc-meta-row" style="border-bottom:none;"><span class="lbl fw-bold" style="color:var(--ink);">Total</span><span class="fw-bold fs-5">${fmt(t.grandTotal)}</span></div>
+
+      ${inv.business.footerNote ? `<div class="rc-note-box"><i class="bi bi-info-circle"></i> ${escapeHtml(inv.business.footerNote)}</div>` : ''}
+
+      <div class="mt-3 barcode-wrap">${barcodeSVG(inv.number)}</div>
+      <div class="text-center rc-item-sub">${escapeHtml(inv.number)}</div>
+    </div>`;
+}
+
+function itemsHtmlTicket(items) {
+  if (items.length === 0) return `<div class="rc-line"><span class="rc-muted">No items added</span></div>`;
+  return items.map(it => `
+    <div class="rc-item-block">
+      <div class="rc-item-top"><span>${escapeHtml(it.name)}</span><span>${fmt(it._lineTotal)}</span></div>
+      <div class="rc-item-bottom">
+        <span>${it.qty} x ${fmt(it.price)}</span>
+        <span>${it._discountAmt > 0 ? '-' + fmt(it._discountAmt) + ' disc' : ''}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTicket(inv) {
+  const t = inv.totals;
+  return `
+    <div class="tmpl-ticket">
+      <div class="rc-head">${escapeHtml(inv.business.name).toUpperCase()}</div>
+      <div class="rc-sub">${escapeHtml(inv.business.address || '')}${inv.business.phone ? ' · ' + escapeHtml(inv.business.phone) : ''}</div>
+      <div class="rc-dashed mt-2 pt-2">
+        <div class="rc-line"><span>Receipt</span><span>#${escapeHtml(inv.number)}</span></div>
+        <div class="rc-line"><span>Date</span><span>${inv.dateStr}</span></div>
+        <div class="rc-line"><span>Customer</span><span>${escapeHtml(inv.customer || 'Walk-in')}</span></div>
+        <div class="rc-line"><span>Status</span><span>${inv.status === 'paid' ? 'PAID' : 'UNPAID'}</span></div>
+      </div>
+
+      <div class="rc-codebox">${escapeHtml(inv.number)}</div>
+
+      <div class="rc-dashed pt-2">${itemsHtmlTicket(inv.items)}</div>
+
+      <div class="rc-dashed mt-2 pt-2">
+        <div class="rc-line"><span>Subtotal</span><span>${fmt(t.subtotal)}</span></div>
+        ${t.overallDiscAmt > 0 ? `<div class="rc-line"><span>Discount</span><span>-${fmt(t.overallDiscAmt)}</span></div>` : ''}
+        ${t.taxAmt > 0 ? `<div class="rc-line"><span>Tax (${inv.taxPercent}%)</span><span>${fmt(t.taxAmt)}</span></div>` : ''}
+        <div class="rc-line" style="font-weight:700; font-size:.85rem;"><span>TOTAL</span><span>${fmt(t.grandTotal)}</span></div>
+      </div>
+
+      <div class="text-center fw-bold mt-3" style="font-size:.78rem;">THANK YOU FOR YOUR BUSINESS!</div>
+      ${inv.business.footerNote ? `<div class="rc-sub text-center mt-1">${escapeHtml(inv.business.footerNote)}</div>` : ''}
+
+      <div class="mt-3 barcode-wrap">${barcodeSVG(inv.number)}</div>
+      <div class="text-center rc-sub">${escapeHtml(inv.number)}</div>
+    </div>`;
+}
+
+function itemsHtmlSlip(items) {
+  if (items.length === 0) return `<div class="rc-item-row"><span class="rc-muted">No items added</span></div>`;
+  return items.map(it => `
+    <div class="rc-item-row">
+      <span>${escapeHtml(it.name)} <span class="rc-muted">(${it.qty} × ${fmt(it.price)})</span></span>
+      <span class="fw-semibold">${fmt(it._lineTotal)}</span>
+    </div>
+  `).join('');
+}
+
+function renderSlip(inv) {
+  const t = inv.totals;
+  return `
+    <div class="tmpl-slip">
+      <div class="rc-bar d-flex justify-content-between align-items-start">
+        <div>
+          <div class="rc-biz">${escapeHtml(inv.business.name)}</div>
+          <div class="rc-sub">Sales Receipt</div>
+        </div>
+        <div class="text-end">
+          <div class="rc-sub">${inv.dateStr}</div>
+        </div>
+      </div>
+      <div class="rc-body">
+        <div class="rc-field-row"><span class="lbl">Billed to</span><span>${escapeHtml(inv.customer || 'Walk-in customer')}</span></div>
+        <div class="rc-field-row"><span class="lbl">Invoice #</span><span>${escapeHtml(inv.number)}</span></div>
+        <div class="rc-field-row"><span class="lbl">Status</span>
+          <span class="rc-status-pill ${inv.status === 'paid' ? 'rc-status-paid' : 'rc-status-unpaid'}">${inv.status === 'paid' ? 'Paid' : 'Unpaid'}</span>
+        </div>
+
+        <div class="mt-2">${itemsHtmlSlip(inv.items)}</div>
+
+        <div class="rc-field-row mt-2"><span class="lbl">Subtotal</span><span>${fmt(t.subtotal)}</span></div>
+        ${t.overallDiscAmt > 0 ? `<div class="rc-field-row"><span class="lbl">Discount</span><span>-${fmt(t.overallDiscAmt)}</span></div>` : ''}
+        ${t.taxAmt > 0 ? `<div class="rc-field-row"><span class="lbl">Tax (${inv.taxPercent}%)</span><span>${fmt(t.taxAmt)}</span></div>` : ''}
+
+        <div class="rc-amount-box">
+          <div class="rc-sub">Amount ${inv.status === 'paid' ? 'Paid' : 'Due'}</div>
+          <div class="amt">${fmt(t.grandTotal)}</div>
+          <div class="words">${numberToWords(t.grandTotal)} ${inv.business.currency === 'Rs' ? 'Rupees' : ''} Only</div>
+        </div>
+
+        <div class="rc-footer-note">
+          ${inv.business.footerNote ? escapeHtml(inv.business.footerNote) + '<br>' : ''}
+          ${escapeHtml(inv.business.phone || '')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderPreview() {
+  const inv = state.viewingHistoryId
+    ? state.history.find(h => h.id === state.viewingHistoryId)
+    : buildInvoiceSnapshot();
+
+  if (!inv) return;
+
+  const container = document.getElementById('receiptPreview');
+  container.className = 'receipt-paper ' + paperClass(inv.paperSize) + ' tmpl-' + inv.template;
+
+  if (inv.template === 'ticket') container.innerHTML = renderTicket(inv);
+  else if (inv.template === 'slip') container.innerHTML = renderSlip(inv);
+  else container.innerHTML = renderModern(inv);
+
+  document.getElementById('viewingBanner').classList.toggle('d-none', !state.viewingHistoryId);
+}
+
+/* =========================================================
+   CATALOG (autocomplete)
+   ========================================================= */
+function renderCatalogDatalist() {
+  const dl = document.getElementById('catalogList');
+  dl.innerHTML = state.catalog.map(p => `<option value="${escapeHtml(p.name)}">`).join('');
+}
+
+function upsertCatalog(name, price) {
+  const existing = state.catalog.find(p => p.name.toLowerCase() === name.toLowerCase());
+  if (existing) existing.price = price;
+  else state.catalog.unshift({ name, price });
+  state.catalog = state.catalog.slice(0, 200);
+  storageSet('catalog', state.catalog);
+  renderCatalogDatalist();
+}
+
+/* =========================================================
+   HISTORY
+   ========================================================= */
+function renderHistory() {
+  const body = document.getElementById('historyBody');
+  const noMsg = document.getElementById('noHistoryMsg');
+  if (state.history.length === 0) {
+    body.innerHTML = '';
+    noMsg.classList.remove('d-none');
+    return;
+  }
+  noMsg.classList.add('d-none');
+  body.innerHTML = state.history.map(inv => `
+    <tr>
+      <td class="rc-mono">${escapeHtml(inv.number)}</td>
+      <td>${inv.dateStr}</td>
+      <td>${escapeHtml(inv.customer || 'Walk-in')}</td>
+      <td class="text-end">${fmt(inv.totals.grandTotal)}</td>
+      <td class="text-end">
+        <button class="btn btn-sm btn-outline-brand view-history-btn" data-id="${inv.id}">View</button>
+        <button class="btn btn-sm btn-outline-danger delete-history-btn" data-id="${inv.id}"><i class="bi bi-trash"></i></button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* =========================================================
+   EVENT WIRING
+   ========================================================= */
+function wireAddItemForm() {
+  document.getElementById('addItemForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('itemName').value.trim();
+    const qty = parseFloat(document.getElementById('itemQty').value);
+    const price = parseFloat(document.getElementById('itemPrice').value);
+    const discountType = document.getElementById('itemDiscountType').value;
+    const discountValue = parseFloat(document.getElementById('itemDiscountValue').value) || 0;
+
+    if (!name || !(qty > 0) || isNaN(price) || price < 0) {
+      showToast('Please enter a valid item name, quantity and price.');
+      return;
+    }
+
+    state.cart.push({
+      id: editingItemId || uid(),
+      name, qty, price, discountType, discountValue
+    });
+    editingItemId = null;
+    document.getElementById('addItemBtn').innerHTML = '<i class="bi bi-plus-lg"></i>';
+
+    upsertCatalog(name, price);
+
+    e.target.reset();
+    document.getElementById('itemQty').value = 1;
+    document.getElementById('itemDiscountType').value = 'percent';
+    document.getElementById('itemName').focus();
+
+    renderCart();
+  });
+
+  document.getElementById('itemName').addEventListener('input', e => {
+    const match = state.catalog.find(p => p.name.toLowerCase() === e.target.value.trim().toLowerCase());
+    if (match) document.getElementById('itemPrice').value = match.price;
+  });
+}
+
+function wireCartActions() {
+  document.getElementById('cartBody').addEventListener('click', e => {
+    const editBtn = e.target.closest('.edit-item-btn');
+    const removeBtn = e.target.closest('.remove-item-btn');
+
+    if (removeBtn) {
+      const id = removeBtn.dataset.id;
+      state.cart = state.cart.filter(it => it.id !== id);
+      renderCart();
+    }
+
+    if (editBtn) {
+      const id = editBtn.dataset.id;
+      const item = state.cart.find(it => it.id === id);
+      if (!item) return;
+      document.getElementById('itemName').value = item.name;
+      document.getElementById('itemQty').value = item.qty;
+      document.getElementById('itemPrice').value = item.price;
+      document.getElementById('itemDiscountType').value = item.discountType;
+      document.getElementById('itemDiscountValue').value = item.discountValue;
+      editingItemId = id;
+      document.getElementById('addItemBtn').innerHTML = '<i class="bi bi-check2"></i>';
+      state.cart = state.cart.filter(it => it.id !== id);
+      renderCart();
+      document.getElementById('itemName').focus();
+    }
+  });
+}
+
+function wireSaleDetailInputs() {
+  document.getElementById('customerName').addEventListener('input', e => { state.customer = e.target.value; renderPreview(); });
+  document.getElementById('saleNote').addEventListener('input', e => { state.note = e.target.value; renderPreview(); });
+  document.getElementById('saleStatus').addEventListener('change', e => { state.status = e.target.value; renderPreview(); });
+
+  document.getElementById('overallDiscountValue').addEventListener('input', e => {
+    state.overallDiscount.value = parseFloat(e.target.value) || 0;
+    renderCart();
+  });
+  document.getElementById('overallDiscountType').addEventListener('change', e => {
+    state.overallDiscount.type = e.target.value;
+    renderCart();
+  });
+  document.getElementById('taxPercent').addEventListener('input', e => {
+    state.taxPercent = parseFloat(e.target.value) || 0;
+    renderCart();
+  });
+}
+
+function wireTemplateAndPaper() {
+  document.querySelectorAll('.tmpl-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tmpl-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.settings.template = tab.dataset.tmpl;
+      storageSet('settings', state.settings);
+      renderPreview();
+    });
+  });
+
+  document.getElementById('paperSize').addEventListener('change', e => {
+    state.settings.paperSize = e.target.value;
+    storageSet('settings', state.settings);
+    renderPreview();
+  });
+}
+
+function wireNewSale() {
+  document.getElementById('newSaleBtn').addEventListener('click', () => {
+    state.cart = [];
+    state.customer = '';
+    state.note = '';
+    state.status = 'paid';
+    state.overallDiscount = { type: 'percent', value: 0 };
+    state.taxPercent = 0;
+    state.viewingHistoryId = null;
+    document.getElementById('customerName').value = '';
+    document.getElementById('saleNote').value = '';
+    document.getElementById('saleStatus').value = 'paid';
+    document.getElementById('overallDiscountValue').value = 0;
+    document.getElementById('taxPercent').value = 0;
+    renderCart();
+    showToast('Started a new sale.');
+  });
+
+  document.getElementById('backToCurrentBtn').addEventListener('click', () => {
+    state.viewingHistoryId = null;
+    renderPreview();
+  });
+}
+
+function wireSaveAndPrint() {
+  document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
+    if (state.cart.length === 0) {
+      showToast('Add at least one item before saving.');
+      return;
+    }
+    const number = currentDraftNumber();
+    const snapshot = buildInvoiceSnapshot(number);
+    snapshot.id = number;
+    state.history.unshift(snapshot);
+    state.history = state.history.slice(0, 200);
+    await storageSet('history', state.history);
+
+    state.settings.counter = (state.settings.counter || 1) + 1;
+    await storageSet('settings', state.settings);
+
+    renderHistory();
+    document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
+    showToast(`Saved as ${number}`);
+    renderPreview();
+  });
+
+  document.getElementById('printBtn').addEventListener('click', () => {
+    window.print();
+  });
+}
+
+function wireHistoryModal() {
+  document.getElementById('historyBody').addEventListener('click', e => {
+    const viewBtn = e.target.closest('.view-history-btn');
+    const delBtn = e.target.closest('.delete-history-btn');
+
+    if (viewBtn) {
+      state.viewingHistoryId = viewBtn.dataset.id;
+      renderPreview();
+      bootstrap.Modal.getInstance(document.getElementById('historyModal'))?.hide();
+    }
+    if (delBtn) {
+      state.history = state.history.filter(h => h.id !== delBtn.dataset.id);
+      storageSet('history', state.history);
+      renderHistory();
+    }
+  });
+}
+
+function wireSettingsForm() {
+  document.getElementById('settingsForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    state.settings.businessName = document.getElementById('setBizName').value.trim() || state.settings.businessName;
+    state.settings.address = document.getElementById('setAddress').value.trim();
+    state.settings.phone = document.getElementById('setPhone').value.trim();
+    state.settings.footerNote = document.getElementById('setFooter').value.trim();
+    state.settings.prefix = document.getElementById('setPrefix').value.trim() || 'INV';
+    state.settings.currency = document.getElementById('setCurrency').value.trim() || 'Rs';
+    await storageSet('settings', state.settings);
+    document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
+    renderPreview();
+    showToast('Settings saved.');
+  });
+
+  document.getElementById('resetCounterBtn').addEventListener('click', async () => {
+    state.settings.counter = 1;
+    await storageSet('settings', state.settings);
+    document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
+    showToast('Invoice counter reset.');
+  });
+}
+
+function fillSettingsForm() {
+  document.getElementById('setBizName').value = state.settings.businessName;
+  document.getElementById('setAddress').value = state.settings.address;
+  document.getElementById('setPhone').value = state.settings.phone;
+  document.getElementById('setFooter').value = state.settings.footerNote;
+  document.getElementById('setPrefix').value = state.settings.prefix;
+  document.getElementById('setCurrency').value = state.settings.currency;
+  document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
+
+  document.getElementById('paperSize').value = state.settings.paperSize;
+  document.querySelectorAll('.tmpl-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tmpl === state.settings.template);
+  });
+}
+
+/* =========================================================
+   BLUETOOTH PRINTING (Web Bluetooth + ESC/POS)
+   ========================================================= */
+const KNOWN_PRINTER_SERVICES = [
+  '000018f0-0000-1000-8000-00805f9b34fb',
+  '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+  '0000ff00-0000-1000-8000-00805f9b34fb',
+  '0000ffe0-0000-1000-8000-00805f9b34fb'
+];
+
+function setBtStatus(connected, label) {
+  const pill = document.getElementById('btStatusPill');
+  pill.classList.toggle('connected', connected);
+  document.getElementById('btStatusText').textContent = label;
+  document.getElementById('printBtBtn').disabled = !connected;
+}
+
+async function connectBluetoothPrinter() {
+  if (!navigator.bluetooth) {
+    showToast('Web Bluetooth is not supported on this browser/device.');
+    return;
+  }
+  try {
+    btDevice = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: KNOWN_PRINTER_SERVICES
+    });
+    const server = await btDevice.gatt.connect();
+
+    let foundChar = null;
+    for (const svcUuid of KNOWN_PRINTER_SERVICES) {
+      try {
+        const service = await server.getPrimaryService(svcUuid);
+        const chars = await service.getCharacteristics();
+        foundChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse) || null;
+        if (foundChar) break;
+      } catch (err) { /* this service isn't present on this device, try next */ }
+    }
+
+    if (!foundChar) {
+      showToast('Connected, but no writable print service was found on this device.');
+      setBtStatus(false, 'Unsupported printer profile');
+      return;
+    }
+
+    btCharacteristic = foundChar;
+    setBtStatus(true, 'Connected: ' + (btDevice.name || 'printer'));
+    showToast('Printer connected.');
+  } catch (err) {
+    console.error(err);
+    setBtStatus(false, 'Printer not connected');
+  }
+}
+
+function center(str, width) {
+  str = String(str || '');
+  if (str.length >= width) return str.slice(0, width);
+  const pad = width - str.length;
+  const left = Math.floor(pad / 2);
+  return ' '.repeat(left) + str + ' '.repeat(pad - left);
+}
+
+function padLine(left, right, width) {
+  left = String(left); right = String(right);
+  const space = Math.max(1, width - left.length - right.length);
+  return left + ' '.repeat(space) + right;
+}
+
+function buildReceiptText(inv) {
+  const width = inv.paperSize === '58mm' ? 32 : 42;
+  const t = inv.totals;
+  let lines = [];
+  lines.push(center(inv.business.name.toUpperCase(), width));
+  if (inv.business.address) lines.push(center(inv.business.address, width));
+  if (inv.business.phone) lines.push(center(inv.business.phone, width));
+  lines.push('-'.repeat(width));
+  lines.push(`Invoice: ${inv.number}`);
+  lines.push(`Date: ${inv.dateStr}`);
+  lines.push(`Customer: ${inv.customer || 'Walk-in'}`);
+  lines.push('-'.repeat(width));
+  inv.items.forEach(it => {
+    lines.push(it.name);
+    lines.push(padLine(`${it.qty} x ${fmt(it.price)}`, fmt(it._lineTotal), width));
+    if (it._discountAmt > 0) lines.push(padLine('  discount', '-' + fmt(it._discountAmt), width));
+  });
+  lines.push('-'.repeat(width));
+  lines.push(padLine('Subtotal', fmt(t.subtotal), width));
+  if (t.overallDiscAmt > 0) lines.push(padLine('Discount', '-' + fmt(t.overallDiscAmt), width));
+  if (t.taxAmt > 0) lines.push(padLine(`Tax (${inv.taxPercent}%)`, fmt(t.taxAmt), width));
+  lines.push(padLine('TOTAL', fmt(t.grandTotal), width));
+  lines.push('-'.repeat(width));
+  if (inv.business.footerNote) lines.push(center(inv.business.footerNote, width));
+  lines.push(center('Thank you!', width));
+  return lines.join('\n') + '\n\n\n';
+}
+
+function concatBytes(arrays) {
+  const total = arrays.reduce((sum, a) => sum + a.length, 0);
+  const out = new Uint8Array(total);
+  let offset = 0;
+  arrays.forEach(a => { out.set(a, offset); offset += a.length; });
+  return out;
+}
+
+function buildEscPosBytes(inv) {
+  const ESC = 0x1B, GS = 0x1D;
+  const encoder = new TextEncoder();
+  const init = new Uint8Array([ESC, 0x40]);          // ESC @  - initialize
+  const alignCenter = new Uint8Array([ESC, 0x61, 1]);
+  const cut = new Uint8Array([GS, 0x56, 0x00]);        // partial cut (best-effort, ignored by printers without a cutter)
+  const feed = new Uint8Array([0x0A, 0x0A, 0x0A]);
+
+  const text = encoder.encode(buildReceiptText(inv));
+  return concatBytes([init, alignCenter, text, feed, cut]);
+}
+
+async function printViaBluetooth() {
+  if (!btCharacteristic) {
+    showToast('Connect a Bluetooth printer first.');
+    return;
+  }
+  const inv = state.viewingHistoryId
+    ? state.history.find(h => h.id === state.viewingHistoryId)
+    : buildInvoiceSnapshot();
+  const bytes = buildEscPosBytes(inv);
+  const CHUNK = 150;
+  try {
+    for (let i = 0; i < bytes.length; i += CHUNK) {
+      const chunk = bytes.slice(i, i + CHUNK);
+      if (btCharacteristic.properties.writeWithoutResponse) {
+        await btCharacteristic.writeValueWithoutResponse(chunk);
+      } else {
+        await btCharacteristic.writeValue(chunk);
+      }
+      await new Promise(r => setTimeout(r, 25));
+    }
+    showToast('Sent to Bluetooth printer.');
+  } catch (err) {
+    console.error(err);
+    showToast('Could not print: ' + (err.message || 'printer error'));
+  }
+}
+
+function wireBluetooth() {
+  document.getElementById('connectBtBtn').addEventListener('click', connectBluetoothPrinter);
+  document.getElementById('printBtBtn').addEventListener('click', printViaBluetooth);
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+async function init() {
+  await loadAll();
+  document.getElementById('overallDiscountValue').value = state.overallDiscount.value;
+  document.getElementById('taxPercent').value = state.taxPercent;
+
+  fillSettingsForm();
+  renderCatalogDatalist();
+  renderHistory();
+  renderCart(); // also triggers renderPreview()
+
+  wireAddItemForm();
+  wireCartActions();
+  wireSaleDetailInputs();
+  wireTemplateAndPaper();
+  wireNewSale();
+  wireSaveAndPrint();
+  wireHistoryModal();
+  wireSettingsForm();
+  wireBluetooth();
+
+  if (!navigator.bluetooth) {
+    document.getElementById('connectBtBtn').disabled = true;
+    document.getElementById('connectBtBtn').title = 'Web Bluetooth not supported on this browser/device';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
+</body>
+</html>
