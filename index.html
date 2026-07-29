@@ -358,7 +358,7 @@
         <form id="addItemForm" class="row g-2 align-items-end">
           <div class="col-12 col-sm-5">
             <label class="form-label">Product name</label>
-            <input type="text" id="itemName" class="form-control" list="catalogList" placeholder="e.g. Cold drink 1.5L" required>
+            <input type="text" id="itemName" class="form-control" list="catalogList" placeholder="e.g. Cold drink" required>
             <datalist id="catalogList"></datalist>
           </div>
           <div class="col-4 col-sm-2">
@@ -431,10 +431,10 @@
         </div>
 
         <div class="rc-dashed mt-3 pt-3">
-          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Subtotal</span><span id="sumSubtotal">Rs0.00</span></div>
-          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Discount</span><span id="sumDiscount">-Rs0.00</span></div>
-          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Tax</span><span id="sumTax">Rs0.00</span></div>
-          <div class="d-flex justify-content-between fw-bold fs-5 mt-1"><span>Total</span><span id="sumTotal">Rs0.00</span></div>
+          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Subtotal</span><span id="sumSubtotal">Rs0</span></div>
+          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Discount</span><span id="sumDiscount">-Rs0</span></div>
+          <div class="d-flex justify-content-between small mb-1"><span class="rc-muted">Tax</span><span id="sumTax">Rs0</span></div>
+          <div class="d-flex justify-content-between fw-bold fs-5 mt-1"><span>Total</span><span id="sumTotal">Rs0</span></div>
         </div>
       </div>
 
@@ -522,21 +522,21 @@
       <div class="col-12 col-sm-4">
         <div class="dash-stat dash-stat-daily">
           <div class="dash-stat-label"><i class="bi bi-sun"></i> Today</div>
-          <div class="dash-stat-amt" id="dashDailyAmt">Rs0.00</div>
+          <div class="dash-stat-amt" id="dashDailyAmt">Rs0</div>
           <div class="dash-stat-sub" id="dashDailyCount">0 sales</div>
         </div>
       </div>
       <div class="col-12 col-sm-4">
         <div class="dash-stat dash-stat-weekly">
           <div class="dash-stat-label"><i class="bi bi-calendar-week"></i> This week</div>
-          <div class="dash-stat-amt" id="dashWeeklyAmt">Rs0.00</div>
+          <div class="dash-stat-amt" id="dashWeeklyAmt">Rs0</div>
           <div class="dash-stat-sub" id="dashWeeklyCount">0 sales</div>
         </div>
       </div>
       <div class="col-12 col-sm-4">
         <div class="dash-stat dash-stat-monthly">
           <div class="dash-stat-label"><i class="bi bi-calendar3"></i> This month</div>
-          <div class="dash-stat-amt" id="dashMonthlyAmt">Rs0.00</div>
+          <div class="dash-stat-amt" id="dashMonthlyAmt">Rs0</div>
           <div class="dash-stat-sub" id="dashMonthlyCount">0 sales</div>
         </div>
       </div>
