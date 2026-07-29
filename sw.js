@@ -2,7 +2,7 @@
 const CACHE_NAME = 'app-cache-v1'; // bump this string on every deploy
 const ASSETS = [
   '/', 'index.html', 'styles.css', 'app.js',
-  'manifest.json', 'dukanslip.png'
+  'manifest.json', 'dukanslip.png', 'https://dilawarpro.github.io/Invoice/'
 ];
 
 self.addEventListener('install', (event) => {
