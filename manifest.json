@@ -1,6 +1,6 @@
 {
   "name": "DukanSlip",
-  "short_name": "App",
+  "short_name": "DukanSlip",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
