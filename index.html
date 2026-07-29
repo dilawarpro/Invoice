@@ -117,6 +117,7 @@
     color:var(--ink-soft); border-bottom:1px solid var(--line); font-weight:700;
   }
   .cart-table td{ vertical-align:middle; border-bottom:1px solid var(--line); }
+  .cart-table td.sr-col{ color:var(--ink-soft); font-weight:600; width:34px; }
   .item-discount-tag{
     font-size:.7rem; background:var(--amber-soft); color:#9c6a14;
     padding:.1rem .4rem; border-radius:6px; display:inline-block; margin-top:.15rem;
@@ -176,6 +177,7 @@
   }
   .rc-status-paid{ background:#e3f6ea; color:var(--good); }
   .rc-status-unpaid{ background:#fde9e7; color:var(--danger); }
+  .rc-sr{ display:inline-block; min-width:1.4em; color:var(--ink-soft); font-weight:600; }
 
   .barcode-wrap svg rect{ shape-rendering:crispEdges; }
 
@@ -190,12 +192,15 @@
   .tmpl-modern .rc-meta-row{ display:flex; justify-content:space-between; padding:.45rem 0; border-bottom:1px solid var(--line); font-size:.84rem; }
   .tmpl-modern .rc-meta-row span.lbl{ color:var(--ink-soft); display:flex; align-items:center; gap:.4rem; }
   .tmpl-modern .rc-meta-row span.lbl i{ color:var(--accent); width:16px; text-align:center; }
-  .tmpl-modern .rc-item-row{ display:flex; justify-content:space-between; padding:.4rem 0; font-size:.83rem; border-bottom:1px dashed var(--line); }
+  .tmpl-modern .rc-item-row{ display:flex; justify-content:space-between; padding:.4rem 0; font-size:.83rem; border-bottom:1px dashed var(--line); gap:.5rem; }
   .tmpl-modern .rc-item-name{ font-weight:600; }
   .tmpl-modern .rc-item-sub{ font-size:.72rem; color:var(--ink-soft); }
   .tmpl-modern .rc-note-box{
     background:var(--amber-soft); border-left:3px solid var(--amber); border-radius:8px;
     padding:.6rem .75rem; font-size:.78rem; color:#7a5410; margin-top:.9rem;
+  }
+  .tmpl-modern .rc-cash-box{
+    background:var(--accent-soft); border-radius:8px; padding:.6rem .75rem; margin-top:.6rem;
   }
 
   /* ===== Template: Ticket ===== */
@@ -214,7 +219,7 @@
   }
   .tmpl-ticket .rc-line{ display:flex; justify-content:space-between; font-size:.74rem; padding:.18rem 0; }
   .tmpl-ticket .rc-item-block{ margin-bottom:.35rem; }
-  .tmpl-ticket .rc-item-top{ display:flex; justify-content:space-between; font-size:.78rem; font-weight:600; }
+  .tmpl-ticket .rc-item-top{ display:flex; justify-content:space-between; font-size:.78rem; font-weight:600; gap:.5rem; }
   .tmpl-ticket .rc-item-bottom{ display:flex; justify-content:space-between; font-size:.68rem; color:var(--ink-soft); }
 
   /* ===== Template: Slip (bank style) ===== */
@@ -228,7 +233,7 @@
   .tmpl-slip .rc-body{ padding:1rem 1.2rem; }
   .tmpl-slip .rc-field-row{ display:flex; justify-content:space-between; padding:.4rem 0; border-bottom:1px solid var(--line); font-size:.82rem; }
   .tmpl-slip .rc-field-row .lbl{ color:var(--ink-soft); }
-  .tmpl-slip .rc-item-row{ display:flex; justify-content:space-between; font-size:.8rem; padding:.32rem 0; border-bottom:1px dashed var(--line); }
+  .tmpl-slip .rc-item-row{ display:flex; justify-content:space-between; font-size:.8rem; padding:.32rem 0; border-bottom:1px dashed var(--line); gap:.5rem; }
   .tmpl-slip .rc-amount-box{
     background:var(--workspace); border-radius:10px; padding:.9rem 1rem; margin-top:.9rem; text-align:center;
   }
@@ -236,6 +241,34 @@
   .tmpl-slip .rc-amount-box .words{ font-size:.68rem; color:var(--ink-soft); margin-top:.25rem; text-transform:uppercase; letter-spacing:.03em; }
 
   .rc-footer-note{ text-align:center; font-size:.7rem; color:var(--ink-soft); margin-top:1rem; padding-top:.8rem; border-top:1px dashed var(--line); }
+
+  /* ---------- App watermark (shown on every template, print & share) ---------- */
+  .rc-app-watermark{
+    text-align:center; font-size:.6rem; line-height:1.4; color:#9aa2ad;
+    margin-top:.7rem; padding-top:.55rem; border-top:1px dashed var(--line);
+    letter-spacing:.01em;
+  }
+
+  /* ---------- Sales dashboard ---------- */
+  .sales-dash-card{ background:linear-gradient(180deg,#fff,#fdfdfb); }
+  .dash-toggle-btn{ background:var(--workspace); border-color:var(--line); color:var(--ink-soft); }
+  .dash-toggle-btn:hover{ background:var(--line); color:var(--ink); }
+  .dash-stat{
+    border-radius:12px; padding:.85rem 1rem; height:100%;
+    border:1px solid var(--line); position:relative; overflow:hidden;
+  }
+  .dash-stat::before{
+    content:""; position:absolute; inset:0 auto 0 0; width:4px;
+  }
+  .dash-stat-daily{ background:var(--accent-soft); }
+  .dash-stat-daily::before{ background:var(--accent); }
+  .dash-stat-weekly{ background:var(--amber-soft); }
+  .dash-stat-weekly::before{ background:var(--amber); }
+  .dash-stat-monthly{ background:#eaf0fe; }
+  .dash-stat-monthly::before{ background:#3b63d9; }
+  .dash-stat-label{ font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); display:flex; align-items:center; gap:.35rem; }
+  .dash-stat-amt{ font-family:'Sora',sans-serif; font-weight:800; font-size:1.35rem; color:var(--ink); margin-top:.15rem; }
+  .dash-stat-sub{ font-size:.72rem; color:var(--ink-soft); margin-top:.1rem; }
 
   /* ---------- Sticky preview col ---------- */
   @media (min-width:992px){
@@ -245,12 +278,38 @@
   /* ---------- Toast ---------- */
   .toast{ font-size:.85rem; }
 
-  /* ---------- Print ---------- */
+  /* ---------- Print ----------
+     IMPORTANT: previously this hid everything with visibility:hidden, which
+     keeps hidden elements in the page's LAYOUT (they just aren't drawn).
+     That made the printed page's height equal to the full app UI (all the
+     builder cards, forms, offcanvas, modal, toast) even though none of it
+     was visible — causing the receipt to land in the top-left corner with
+     huge empty space to the right/bottom and splitting across 2-3 pages.
+
+     Fix: #printRoot is a hidden container that is kept permanently in sync
+     with a copy of the current receipt (via JS, any time the receipt
+     changes). These rules apply on ANY @media print event — regardless of
+     whether printing was triggered by our in-app "Print" button, the
+     browser's own menu, a share sheet, or a keyboard shortcut — because
+     they don't depend on a JS class being toggled first. */
+  #printRoot{ display:none; }
   @media print{
-    body *{ visibility:hidden; }
-    #receiptPreview, #receiptPreview *{ visibility:visible; }
-    #receiptPreview{ position:absolute; top:0; left:0; box-shadow:none !important; }
-    @page{ margin:6mm; }
+    html, body{ margin:0 !important; padding:0 !important; background:#fff !important; }
+    body > *:not(#printRoot){ display:none !important; }
+    #printRoot{
+      display:block !important;
+      margin:0 !important;
+      padding:0 !important;
+    }
+    #printRoot .receipt-paper{
+      box-shadow:none !important;
+      margin:0 !important;
+      page-break-after:avoid;
+      page-break-inside:avoid;
+    }
+    #printRoot .paper-58{ width:58mm !important; }
+    #printRoot .paper-80{ width:80mm !important; }
+    #printRoot .paper-a4{ width:190mm !important; }
   }
 </style>
 </head>
@@ -267,6 +326,7 @@
 </nav>
 
 <div class="container-fluid py-3 px-3 px-md-4">
+
   <div class="row g-3">
 
     <!-- ============ LEFT: BUILDER ============ -->
@@ -331,6 +391,7 @@
           <table class="table cart-table mb-0">
             <thead>
               <tr>
+                <th style="width:34px;">#</th>
                 <th>Item</th>
                 <th class="text-center">Qty</th>
                 <th class="text-end">Price</th>
@@ -377,6 +438,23 @@
         </div>
       </div>
 
+      <div class="builder-card">
+        <h6><i class="bi bi-cash-coin"></i> Cash received &amp; change</h6>
+        <div class="row g-2 align-items-end">
+          <div class="col-6">
+            <label class="form-label">Amount received from customer</label>
+            <input type="number" id="amountReceived" class="form-control" placeholder="e.g. 5000" min="0" step="0.01">
+          </div>
+          <div class="col-6">
+            <label class="form-label">Change to return</label>
+            <input type="text" id="changeDueDisplay" class="form-control fw-bold" value="Rs0.00" readonly tabindex="-1">
+          </div>
+        </div>
+        <p class="small rc-muted mt-2 mb-0" id="changeHint">
+          <i class="bi bi-info-circle"></i> Enter what the customer physically handed over (e.g. 5000) — the change due is calculated automatically and shown on the receipt.
+        </p>
+      </div>
+
     </div>
 
     <!-- ============ RIGHT: PREVIEW ============ -->
@@ -386,8 +464,8 @@
         <div class="builder-card">
           <h6><i class="bi bi-palette"></i> Template</h6>
           <div class="tmpl-tabs">
-            <div class="tmpl-tab active" data-tmpl="modern">Modern<small>Card style</small></div>
-            <div class="tmpl-tab" data-tmpl="ticket">Ticket<small>Classic stub</small></div>
+            <div class="tmpl-tab" data-tmpl="modern">Modern<small>Card style</small></div>
+            <div class="tmpl-tab active" data-tmpl="ticket">Ticket<small>Classic stub</small></div>
             <div class="tmpl-tab" data-tmpl="slip">Slip<small>Bank style</small></div>
           </div>
           <div class="paper-size-row">
@@ -409,24 +487,63 @@
         </div>
 
         <div class="builder-card mt-3">
-          <h6><i class="bi bi-printer"></i> Print &amp; save</h6>
+          <h6><i class="bi bi-printer"></i> Share &amp; print</h6>
           <div class="d-grid gap-2">
             <button class="btn btn-brand" id="saveInvoiceBtn"><i class="bi bi-save"></i> Save invoice to history</button>
-            <button class="btn btn-outline-brand" id="printBtn"><i class="bi bi-printer"></i> Print (system / paired printer)</button>
+            <button class="btn btn-outline-secondary" id="shareImageBtn"><i class="bi bi-share"></i> Share receipt as PNG</button>
             <div class="d-flex gap-2">
               <button class="btn btn-outline-secondary flex-fill" id="connectBtBtn"><i class="bi bi-bluetooth"></i> Pair Bluetooth printer</button>
               <button class="btn btn-amber flex-fill" id="printBtBtn" disabled><i class="bi bi-receipt"></i> Print via Bluetooth</button>
             </div>
           </div>
           <p class="small rc-muted mt-2 mb-0">
-            <i class="bi bi-info-circle"></i>
-            Most low-cost Bluetooth receipt printers pair through your phone's Bluetooth/print settings — once paired, "Print" above will list them as a printer.
-            Direct in-browser Bluetooth printing works only with printers exposing a BLE serial service, over HTTPS, on Chrome/Edge (Android or desktop).
+            <i class="bi bi-share"></i>
+            <strong>Share receipt as PNG</strong> opens your device's share sheet — pick <strong>iPrint</strong> or any other "cat/panda"-style pocket printer app to send the receipt image straight to it. If sharing isn't supported on this browser, the image downloads instead so you can open it from the printer's app.
+          </p>
+          <p class="small rc-muted mt-2 mb-0">
+            <i class="bi bi-bluetooth"></i>
+            For printers exposing a BLE serial service, pair once above, then use <strong>Print via Bluetooth</strong> — works over HTTPS on Chrome/Edge (Android or desktop).
           </p>
         </div>
       </div>
     </div>
 
+  </div>
+
+  <!-- ============ SALES DASHBOARD ============ -->
+  <div class="builder-card sales-dash-card mt-3 mb-0">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <h6 class="mb-0"><i class="bi bi-graph-up-arrow"></i> Sales dashboard</h6>
+      <button class="btn btn-sm nav-icon-btn dash-toggle-btn" id="dashToggleBtn" type="button">
+        <i class="bi bi-eye-slash"></i> <span id="dashToggleLabel">Hide</span>
+      </button>
+    </div>
+    <div id="dashboardBody" class="row g-2 mt-1">
+      <div class="col-12 col-sm-4">
+        <div class="dash-stat dash-stat-daily">
+          <div class="dash-stat-label"><i class="bi bi-sun"></i> Today</div>
+          <div class="dash-stat-amt" id="dashDailyAmt">Rs0.00</div>
+          <div class="dash-stat-sub" id="dashDailyCount">0 sales</div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-4">
+        <div class="dash-stat dash-stat-weekly">
+          <div class="dash-stat-label"><i class="bi bi-calendar-week"></i> This week</div>
+          <div class="dash-stat-amt" id="dashWeeklyAmt">Rs0.00</div>
+          <div class="dash-stat-sub" id="dashWeeklyCount">0 sales</div>
+        </div>
+      </div>
+      <div class="col-12 col-sm-4">
+        <div class="dash-stat dash-stat-monthly">
+          <div class="dash-stat-label"><i class="bi bi-calendar3"></i> This month</div>
+          <div class="dash-stat-amt" id="dashMonthlyAmt">Rs0.00</div>
+          <div class="dash-stat-sub" id="dashMonthlyCount">0 sales</div>
+        </div>
+      </div>
+    </div>
+    <p class="small rc-muted mt-2 mb-0" id="dashEmptyMsg">
+      <i class="bi bi-info-circle"></i> Sales update automatically — in real time — whenever an invoice is saved, printed, or shared. This dashboard never appears on a printed or shared receipt.
+    </p>
   </div>
 </div>
 
@@ -459,6 +576,17 @@
           <label class="form-label">Currency symbol</label>
           <input type="text" id="setCurrency" class="form-control mb-3" placeholder="Rs">
         </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Bluetooth chunk size (advanced)</label>
+        <select id="setBtChunkSize" class="form-select">
+          <option value="20">20 bytes — safest for cheap/mini printers (default)</option>
+          <option value="50">50 bytes</option>
+          <option value="100">100 bytes</option>
+          <option value="150">150 bytes — larger/known-good printers only</option>
+        </select>
+        <div class="form-text">If your mini printer prints garbled text, cuts off, or doesn't print at all, keep this at 20 bytes.</div>
       </div>
 
       <div class="d-flex justify-content-between align-items-center mb-3 p-2 rounded" style="background:var(--workspace);">
@@ -505,7 +633,11 @@
   </div>
 </div>
 
+<!-- Isolated container used only while printing (see #printRoot rules in <style> above) -->
+<div id="printRoot"></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 'use strict';
 
@@ -521,8 +653,10 @@ const state = {
     prefix: 'INV',
     currency: 'Rs',
     counter: 1,
-    template: 'modern',
-    paperSize: '80mm'
+    template: 'ticket',
+    paperSize: '80mm',
+    btChunkSize: 20,
+    dashboardHidden: false
   },
   catalog: [],      // [{name, price}]
   history: [],      // array of saved invoice snapshots
@@ -532,7 +666,10 @@ const state = {
   status: 'paid',
   overallDiscount: { type: 'percent', value: 0 },
   taxPercent: 0,
-  viewingHistoryId: null // when set, preview shows a saved invoice instead of the live cart
+  amountReceived: 0,
+  viewingHistoryId: null, // when set, preview shows a saved invoice instead of the live cart
+  currentSavedId: null,   // history id the live draft was last auto/manually saved as
+  currentSavedKey: null   // snapshot fingerprint at the time of that save, to avoid duplicate entries
 };
 
 let editingItemId = null;
@@ -570,6 +707,13 @@ async function loadAll() {
 /* =========================================================
    UTILITIES
    ========================================================= */
+/* App credit watermark — shown on every invoice/receipt template, including
+   print, PNG share, and Bluetooth (ESC/POS) output. */
+const APP_WATERMARK_TEXT = 'This Invoicing software was created by Dilawar Pro - www.dilawarpro.com | 03314041010';
+function watermarkHtml() {
+  return `<div class="rc-app-watermark">${escapeHtml(APP_WATERMARK_TEXT)}</div>`;
+}
+
 function escapeHtml(str) {
   return String(str ?? '').replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -650,7 +794,7 @@ function showToast(msg) {
 /* =========================================================
    CALCULATIONS
    ========================================================= */
-function computeTotals(cart, overallDiscount, taxPercent) {
+function computeTotals(cart, overallDiscount, taxPercent, amountReceived) {
   let subtotal = 0;
   cart.forEach(item => {
     const gross = Number(item.qty) * Number(item.price);
@@ -673,7 +817,11 @@ function computeTotals(cart, overallDiscount, taxPercent) {
   const taxAmt = afterDiscount * (Number(taxPercent || 0) / 100);
   const grandTotal = afterDiscount + taxAmt;
 
-  return { subtotal, overallDiscAmt, taxAmt, grandTotal };
+  const received = Number(amountReceived || 0);
+  const changeDue = received > 0 ? Math.max(received - grandTotal, 0) : 0;
+  const shortfall = received > 0 ? Math.max(grandTotal - received, 0) : 0;
+
+  return { subtotal, overallDiscAmt, taxAmt, grandTotal, received, changeDue, shortfall };
 }
 
 /* =========================================================
@@ -681,7 +829,7 @@ function computeTotals(cart, overallDiscount, taxPercent) {
    ========================================================= */
 function buildInvoiceSnapshot(numberOverride) {
   const cartCopy = state.cart.map(it => ({ ...it }));
-  const totals = computeTotals(cartCopy, state.overallDiscount, state.taxPercent);
+  const totals = computeTotals(cartCopy, state.overallDiscount, state.taxPercent, state.amountReceived);
   const ts = nowStrings();
   return {
     id: numberOverride ? numberOverride : 'draft',
@@ -695,6 +843,7 @@ function buildInvoiceSnapshot(numberOverride) {
     totals,
     taxPercent: Number(state.taxPercent || 0),
     overallDiscount: { ...state.overallDiscount },
+    amountReceived: Number(state.amountReceived || 0),
     template: state.settings.template,
     paperSize: state.settings.paperSize,
     business: {
@@ -713,19 +862,20 @@ function buildInvoiceSnapshot(numberOverride) {
 function renderCart() {
   const body = document.getElementById('cartBody');
   const emptyMsg = document.getElementById('emptyCartMsg');
-  computeTotals(state.cart, state.overallDiscount, state.taxPercent); // refresh computed fields
+  computeTotals(state.cart, state.overallDiscount, state.taxPercent, state.amountReceived); // refresh computed fields
 
   if (state.cart.length === 0) {
     body.innerHTML = '';
     emptyMsg.classList.remove('d-none');
   } else {
     emptyMsg.classList.add('d-none');
-    body.innerHTML = state.cart.map(item => {
+    body.innerHTML = state.cart.map((item, idx) => {
       const discBadge = item._discountAmt > 0
         ? `<span class="item-discount-tag">-${fmt(item._discountAmt)} discount</span>`
         : '';
       return `
         <tr data-id="${item.id}">
+          <td class="sr-col">${idx + 1}</td>
           <td>
             <div>${escapeHtml(item.name)}</div>
             ${discBadge}
@@ -741,11 +891,29 @@ function renderCart() {
     }).join('');
   }
 
-  const totals = computeTotals(state.cart, state.overallDiscount, state.taxPercent);
+  const totals = computeTotals(state.cart, state.overallDiscount, state.taxPercent, state.amountReceived);
   document.getElementById('sumSubtotal').textContent = fmt(totals.subtotal);
   document.getElementById('sumDiscount').textContent = '-' + fmt(totals.overallDiscAmt);
   document.getElementById('sumTax').textContent = fmt(totals.taxAmt);
   document.getElementById('sumTotal').textContent = fmt(totals.grandTotal);
+
+  const changeDisplay = document.getElementById('changeDueDisplay');
+  const changeHint = document.getElementById('changeHint');
+  if (totals.received > 0 && totals.shortfall > 0) {
+    changeDisplay.value = '-' + fmt(totals.shortfall) + ' short';
+    changeDisplay.classList.remove('text-success');
+    changeDisplay.classList.add('text-danger');
+    changeHint.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Amount received is less than the total. Collect the remaining ' + fmt(totals.shortfall) + '.';
+  } else if (totals.received > 0) {
+    changeDisplay.value = fmt(totals.changeDue);
+    changeDisplay.classList.remove('text-danger');
+    changeDisplay.classList.add('text-success');
+    changeHint.innerHTML = '<i class="bi bi-info-circle"></i> Return ' + fmt(totals.changeDue) + ' change to the customer.';
+  } else {
+    changeDisplay.value = fmt(0);
+    changeDisplay.classList.remove('text-success', 'text-danger');
+    changeHint.innerHTML = '<i class="bi bi-info-circle"></i> Enter what the customer physically handed over (e.g. 5000) — the change due is calculated automatically and shown on the receipt.';
+  }
 
   renderPreview();
 }
@@ -759,12 +927,23 @@ function paperClass(size) {
   return 'paper-80';
 }
 
+function cashRowsHtml(t, currency, fieldClass, labelClass) {
+  if (!(t.received > 0)) return '';
+  let rows = `<div class="${fieldClass}"><span class="${labelClass}">Cash received</span><span>${fmt(t.received)}</span></div>`;
+  if (t.shortfall > 0) {
+    rows += `<div class="${fieldClass}"><span class="${labelClass}">Balance due</span><span class="fw-bold" style="color:var(--danger);">${fmt(t.shortfall)}</span></div>`;
+  } else {
+    rows += `<div class="${fieldClass}"><span class="${labelClass}">Change returned</span><span class="fw-bold" style="color:var(--good);">${fmt(t.changeDue)}</span></div>`;
+  }
+  return rows;
+}
+
 function itemsHtmlModern(items) {
   if (items.length === 0) return `<div class="rc-item-row"><span class="rc-muted">No items added</span></div>`;
-  return items.map(it => `
+  return items.map((it, idx) => `
     <div class="rc-item-row">
       <div>
-        <div class="rc-item-name">${escapeHtml(it.name)}</div>
+        <div class="rc-item-name"><span class="rc-sr">${idx + 1}.</span>${escapeHtml(it.name)}</div>
         <div class="rc-item-sub">${it.qty} × ${fmt(it.price)}${it._discountAmt > 0 ? ' · -' + fmt(it._discountAmt) + ' off' : ''}</div>
       </div>
       <div class="fw-semibold">${fmt(it._lineTotal)}</div>
@@ -798,18 +977,20 @@ function renderModern(inv) {
       ${t.taxAmt > 0 ? `<div class="rc-meta-row"><span class="lbl">Tax (${inv.taxPercent}%)</span><span>${fmt(t.taxAmt)}</span></div>` : ''}
       <div class="rc-meta-row" style="border-bottom:none;"><span class="lbl fw-bold" style="color:var(--ink);">Total</span><span class="fw-bold fs-5">${fmt(t.grandTotal)}</span></div>
 
+      ${t.received > 0 ? `<div class="rc-cash-box">${cashRowsHtml(t, inv.business.currency, 'rc-meta-row', 'lbl')}</div>` : ''}
+
       ${inv.business.footerNote ? `<div class="rc-note-box"><i class="bi bi-info-circle"></i> ${escapeHtml(inv.business.footerNote)}</div>` : ''}
 
-      <div class="mt-3 barcode-wrap">${barcodeSVG(inv.number)}</div>
       <div class="text-center rc-item-sub">${escapeHtml(inv.number)}</div>
+      ${watermarkHtml()}
     </div>`;
 }
 
 function itemsHtmlTicket(items) {
   if (items.length === 0) return `<div class="rc-line"><span class="rc-muted">No items added</span></div>`;
-  return items.map(it => `
+  return items.map((it, idx) => `
     <div class="rc-item-block">
-      <div class="rc-item-top"><span>${escapeHtml(it.name)}</span><span>${fmt(it._lineTotal)}</span></div>
+      <div class="rc-item-top"><span><span class="rc-sr">${idx + 1}.</span>${escapeHtml(it.name)}</span><span>${fmt(it._lineTotal)}</span></div>
       <div class="rc-item-bottom">
         <span>${it.qty} x ${fmt(it.price)}</span>
         <span>${it._discountAmt > 0 ? '-' + fmt(it._discountAmt) + ' disc' : ''}</span>
@@ -842,19 +1023,21 @@ function renderTicket(inv) {
         <div class="rc-line" style="font-weight:700; font-size:.85rem;"><span>TOTAL</span><span>${fmt(t.grandTotal)}</span></div>
       </div>
 
+      ${t.received > 0 ? `<div class="rc-dashed mt-2 pt-2">${cashRowsHtml(t, inv.business.currency, 'rc-line', '')}</div>` : ''}
+
       <div class="text-center fw-bold mt-3" style="font-size:.78rem;">THANK YOU FOR YOUR BUSINESS!</div>
       ${inv.business.footerNote ? `<div class="rc-sub text-center mt-1">${escapeHtml(inv.business.footerNote)}</div>` : ''}
 
-      <div class="mt-3 barcode-wrap">${barcodeSVG(inv.number)}</div>
       <div class="text-center rc-sub">${escapeHtml(inv.number)}</div>
+      ${watermarkHtml()}
     </div>`;
 }
 
 function itemsHtmlSlip(items) {
   if (items.length === 0) return `<div class="rc-item-row"><span class="rc-muted">No items added</span></div>`;
-  return items.map(it => `
+  return items.map((it, idx) => `
     <div class="rc-item-row">
-      <span>${escapeHtml(it.name)} <span class="rc-muted">(${it.qty} × ${fmt(it.price)})</span></span>
+      <span><span class="rc-sr">${idx + 1}.</span>${escapeHtml(it.name)} <span class="rc-muted">(${it.qty} × ${fmt(it.price)})</span></span>
       <span class="fw-semibold">${fmt(it._lineTotal)}</span>
     </div>
   `).join('');
@@ -892,10 +1075,13 @@ function renderSlip(inv) {
           <div class="words">${numberToWords(t.grandTotal)} ${inv.business.currency === 'Rs' ? 'Rupees' : ''} Only</div>
         </div>
 
+        ${t.received > 0 ? `<div class="mt-2">${cashRowsHtml(t, inv.business.currency, 'rc-field-row', 'lbl')}</div>` : ''}
+
         <div class="rc-footer-note">
           ${inv.business.footerNote ? escapeHtml(inv.business.footerNote) + '<br>' : ''}
           ${escapeHtml(inv.business.phone || '')}
         </div>
+        ${watermarkHtml()}
       </div>
     </div>`;
 }
@@ -915,6 +1101,18 @@ function renderPreview() {
   else container.innerHTML = renderModern(inv);
 
   document.getElementById('viewingBanner').classList.toggle('d-none', !state.viewingHistoryId);
+
+  syncPrintRoot(container);
+}
+
+/* Keep the hidden #printRoot container mirroring the current receipt at all
+   times, so printing works correctly no matter how it's triggered (our
+   in-app button, the browser's own Print/Share menu, Ctrl+P, etc.) — see
+   the #printRoot rules in the <style> block for why this fixes the
+   "prints the whole app instead of just the receipt" bug. */
+function syncPrintRoot(receiptEl) {
+  const printRoot = document.getElementById('printRoot');
+  if (printRoot) printRoot.innerHTML = receiptEl.outerHTML;
 }
 
 /* =========================================================
@@ -1046,6 +1244,11 @@ function wireSaleDetailInputs() {
     state.taxPercent = parseFloat(e.target.value) || 0;
     renderCart();
   });
+
+  document.getElementById('amountReceived').addEventListener('input', e => {
+    state.amountReceived = parseFloat(e.target.value) || 0;
+    renderCart();
+  });
 }
 
 function wireTemplateAndPaper() {
@@ -1074,12 +1277,16 @@ function wireNewSale() {
     state.status = 'paid';
     state.overallDiscount = { type: 'percent', value: 0 };
     state.taxPercent = 0;
+    state.amountReceived = 0;
     state.viewingHistoryId = null;
+    state.currentSavedId = null;
+    state.currentSavedKey = null;
     document.getElementById('customerName').value = '';
     document.getElementById('saleNote').value = '';
     document.getElementById('saleStatus').value = 'paid';
     document.getElementById('overallDiscountValue').value = 0;
     document.getElementById('taxPercent').value = 0;
+    document.getElementById('amountReceived').value = '';
     renderCart();
     showToast('Started a new sale.');
   });
@@ -1090,30 +1297,221 @@ function wireNewSale() {
   });
 }
 
+/* A fingerprint of everything that defines the current draft sale. Used to
+   tell whether the draft has changed since it was last saved to history, so
+   printing/sharing the same unmodified sale twice doesn't create duplicate
+   history entries or double-count it on the dashboard. */
+function snapshotKey() {
+  return JSON.stringify({
+    cart: state.cart, customer: state.customer, note: state.note, status: state.status,
+    overallDiscount: state.overallDiscount, taxPercent: state.taxPercent, amountReceived: state.amountReceived
+  });
+}
+
+/* Save the current draft sale to history — used by the manual "Save invoice
+   to history" button AND automatically whenever the receipt is printed or
+   shared, so nothing has to be saved by hand. If viewing a past receipt from
+   history, it's already saved, so this is a no-op. If nothing has changed
+   since the draft was last saved, the existing history entry is reused
+   instead of creating a duplicate. Returns the saved (or reused) invoice, or
+   null if there was nothing to save. */
+async function persistCurrentInvoice(opts) {
+  opts = opts || {};
+  const silent = !!opts.silent;
+
+  if (state.viewingHistoryId) {
+    return state.history.find(h => h.id === state.viewingHistoryId) || null;
+  }
+  if (state.cart.length === 0) {
+    if (!silent) showToast('Add at least one item before saving.');
+    return null;
+  }
+
+  const key = snapshotKey();
+  if (state.currentSavedId && state.currentSavedKey === key) {
+    const existing = state.history.find(h => h.id === state.currentSavedId);
+    if (existing) {
+      if (!silent) showToast(`Already saved as ${existing.number}`);
+      return existing;
+    }
+  }
+
+  const number = currentDraftNumber();
+  const snapshot = buildInvoiceSnapshot(number);
+  snapshot.id = number;
+  state.history.unshift(snapshot);
+  state.history = state.history.slice(0, 200);
+  await storageSet('history', state.history);
+
+  state.settings.counter = (state.settings.counter || 1) + 1;
+  await storageSet('settings', state.settings);
+
+  state.currentSavedId = snapshot.id;
+  state.currentSavedKey = key;
+
+  renderHistory();
+  renderDashboard();
+  document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
+  if (!silent) showToast(`Saved as ${number}`);
+
+  return snapshot;
+}
+
 function wireSaveAndPrint() {
   document.getElementById('saveInvoiceBtn').addEventListener('click', async () => {
-    if (state.cart.length === 0) {
-      showToast('Add at least one item before saving.');
-      return;
-    }
-    const number = currentDraftNumber();
-    const snapshot = buildInvoiceSnapshot(number);
-    snapshot.id = number;
-    state.history.unshift(snapshot);
-    state.history = state.history.slice(0, 200);
-    await storageSet('history', state.history);
-
-    state.settings.counter = (state.settings.counter || 1) + 1;
-    await storageSet('settings', state.settings);
-
-    renderHistory();
-    document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
-    showToast(`Saved as ${number}`);
+    await persistCurrentInvoice({ silent: false });
     renderPreview();
   });
 
-  document.getElementById('printBtn').addEventListener('click', () => {
-    window.print();
+  document.getElementById('shareImageBtn').addEventListener('click', shareReceiptAsImage);
+
+  /* Covers every way a physical print can be triggered — this button,
+     the browser's own Print menu, or Ctrl+P — so the sale is always
+     recorded to history and the dashboard before the print dialog opens. */
+  window.addEventListener('beforeprint', () => { persistCurrentInvoice({ silent: true }); });
+}
+
+/* Set the physical @page size/margins to match the selected paper before
+   printing, so the browser doesn't default to A4/Letter and leave the
+   receipt stranded in a corner of a much bigger page. */
+function applyPrintPageSize() {
+  let styleTag = document.getElementById('dynamicPrintStyle');
+  if (!styleTag) {
+    styleTag = document.createElement('style');
+    styleTag.id = 'dynamicPrintStyle';
+    document.head.appendChild(styleTag);
+  }
+  let size, margin;
+  if (state.settings.paperSize === '58mm') { size = '58mm auto'; margin = '0mm'; }
+  else if (state.settings.paperSize === 'a4') { size = 'A4'; margin = '10mm'; }
+  else { size = '80mm auto'; margin = '0mm'; } // 80mm thermal roll (default)
+  styleTag.textContent = `@media print { @page { size: ${size}; margin: ${margin}; } }`;
+}
+
+/* Print only the receipt. #printRoot is kept permanently synced with the
+   current receipt (see syncPrintRoot), so all we need to do here is set the
+   correct physical page size and open the print dialog — this also means
+   printing works correctly even if triggered by the browser's own
+   Print/Share menu instead of this button, since the CSS no longer depends
+   on a class being toggled first. */
+function printReceipt() {
+  applyPrintPageSize();
+  window.print();
+}
+
+/* For pocket "cat/panda printer" style mini printers that don't support
+   system Print or ESC/POS Bluetooth at all — render the receipt to a PNG
+   and hand it straight to the device share sheet (where apps like iPrint
+   show up as a share target). Falls back to a plain download if the Web
+   Share API (or file sharing) isn't available on this browser/device. */
+async function shareReceiptAsImage() {
+  if (typeof html2canvas === 'undefined') {
+    showToast('Image export library failed to load — check your internet connection.');
+    return;
+  }
+  const target = document.getElementById('receiptPreview');
+  if (!target || !target.innerHTML.trim()) {
+    showToast('Nothing to share yet — add items or open a saved receipt first.');
+    return;
+  }
+
+  // Auto-save this sale to history before sharing, so it's counted on the dashboard.
+  const saved = await persistCurrentInvoice({ silent: true });
+
+  try {
+    const canvas = await html2canvas(target, { backgroundColor: '#ffffff', scale: 3, useCORS: true });
+    const inv = saved || (state.viewingHistoryId
+      ? state.history.find(h => h.id === state.viewingHistoryId)
+      : buildInvoiceSnapshot());
+    const filename = (inv && inv.number ? inv.number : 'receipt').replace(/[^a-z0-9\-]/gi, '_') + '.png';
+
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error('Could not generate image');
+    const file = new File([blob], filename, { type: 'image/png' });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: inv && inv.number ? inv.number : 'Receipt',
+        text: 'Receipt ' + (inv && inv.number ? inv.number : '')
+      });
+      showToast('Receipt shared — pick iPrint or your printer app.');
+    } else {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
+      showToast('Sharing isn\'t supported here — image downloaded instead. Open it from your printer\'s app.');
+    }
+  } catch (err) {
+    if (err && err.name === 'AbortError') return; // user cancelled the share sheet
+    console.error(err);
+    showToast('Could not share image: ' + (err.message || 'unknown error'));
+  }
+}
+
+/* =========================================================
+   SALES DASHBOARD (daily / weekly / monthly — from saved history)
+   ========================================================= */
+function startOfDay(d) { const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function startOfWeek(d) {
+  const x = startOfDay(d);
+  const day = x.getDay(); // 0 = Sunday
+  const diff = (day === 0 ? 6 : day - 1); // week starts Monday
+  x.setDate(x.getDate() - diff);
+  return x;
+}
+function startOfMonth(d) { const x = startOfDay(d); x.setDate(1); return x; }
+
+function computeSalesStats() {
+  const now = new Date();
+  const dayStart = startOfDay(now);
+  const weekStart = startOfWeek(now);
+  const monthStart = startOfMonth(now);
+
+  const stats = {
+    daily: { total: 0, count: 0 },
+    weekly: { total: 0, count: 0 },
+    monthly: { total: 0, count: 0 }
+  };
+
+  state.history.forEach(inv => {
+    const d = new Date(inv.dateISO);
+    if (isNaN(d)) return;
+    const amt = (inv.totals && inv.totals.grandTotal) || 0;
+    if (d >= dayStart) { stats.daily.total += amt; stats.daily.count++; }
+    if (d >= weekStart) { stats.weekly.total += amt; stats.weekly.count++; }
+    if (d >= monthStart) { stats.monthly.total += amt; stats.monthly.count++; }
+  });
+
+  return stats;
+}
+
+function renderDashboard() {
+  const stats = computeSalesStats();
+  document.getElementById('dashDailyAmt').textContent = fmt(stats.daily.total);
+  document.getElementById('dashDailyCount').textContent = stats.daily.count + (stats.daily.count === 1 ? ' sale' : ' sales');
+  document.getElementById('dashWeeklyAmt').textContent = fmt(stats.weekly.total);
+  document.getElementById('dashWeeklyCount').textContent = stats.weekly.count + (stats.weekly.count === 1 ? ' sale' : ' sales');
+  document.getElementById('dashMonthlyAmt').textContent = fmt(stats.monthly.total);
+  document.getElementById('dashMonthlyCount').textContent = stats.monthly.count + (stats.monthly.count === 1 ? ' sale' : ' sales');
+}
+
+function applyDashboardVisibility() {
+  const hidden = !!state.settings.dashboardHidden;
+  document.getElementById('dashboardBody').classList.toggle('d-none', hidden);
+  document.getElementById('dashEmptyMsg').classList.toggle('d-none', hidden);
+  document.getElementById('dashToggleLabel').textContent = hidden ? 'Show' : 'Hide';
+  const icon = document.querySelector('#dashToggleBtn i');
+  if (icon) icon.className = hidden ? 'bi bi-eye' : 'bi bi-eye-slash';
+}
+
+function wireDashboardToggle() {
+  document.getElementById('dashToggleBtn').addEventListener('click', () => {
+    state.settings.dashboardHidden = !state.settings.dashboardHidden;
+    storageSet('settings', state.settings);
+    applyDashboardVisibility();
   });
 }
 
@@ -1131,6 +1529,7 @@ function wireHistoryModal() {
       state.history = state.history.filter(h => h.id !== delBtn.dataset.id);
       storageSet('history', state.history);
       renderHistory();
+      renderDashboard();
     }
   });
 }
@@ -1144,6 +1543,7 @@ function wireSettingsForm() {
     state.settings.footerNote = document.getElementById('setFooter').value.trim();
     state.settings.prefix = document.getElementById('setPrefix').value.trim() || 'INV';
     state.settings.currency = document.getElementById('setCurrency').value.trim() || 'Rs';
+    state.settings.btChunkSize = parseInt(document.getElementById('setBtChunkSize').value, 10) || 20;
     await storageSet('settings', state.settings);
     document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
     renderPreview();
@@ -1165,6 +1565,7 @@ function fillSettingsForm() {
   document.getElementById('setFooter').value = state.settings.footerNote;
   document.getElementById('setPrefix').value = state.settings.prefix;
   document.getElementById('setCurrency').value = state.settings.currency;
+  document.getElementById('setBtChunkSize').value = String(state.settings.btChunkSize || 20);
   document.getElementById('nextInvoicePreview').textContent = currentDraftNumber();
 
   document.getElementById('paperSize').value = state.settings.paperSize;
@@ -1175,12 +1576,29 @@ function fillSettingsForm() {
 
 /* =========================================================
    BLUETOOTH PRINTING (Web Bluetooth + ESC/POS)
+
+   Mini/generic thermal printers (like the cheap ones sold on Daraz)
+   are usually built around an HM-10/HC-08 style serial module. Two
+   things commonly break printing on these:
+     1. The default BLE ATT MTU on many phones/printers is only
+        20-23 bytes, so writing large chunks (e.g. 150 bytes) either
+        silently truncates or throws — the old code used 150 byte
+        chunks, which is too big for most of these printers.
+     2. Sending an unsupported command (like the paper "cut" command
+        on printers with no cutter) in the same byte stream as the
+        receipt text can abort the whole write.
+   Fixes below: much smaller default chunk size (configurable in
+   Settings), the "cut" command is now optional and sent as its own
+   isolated write that can fail without affecting the receipt text,
+   and more known service UUIDs are scanned for a writable characteristic.
    ========================================================= */
 const KNOWN_PRINTER_SERVICES = [
-  '000018f0-0000-1000-8000-00805f9b34fb',
-  '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+  '000018f0-0000-1000-8000-00805f9b34fb', // common generic ESC/POS BLE printer service
+  '49535343-fe7d-4ae5-8fa9-9fafd205e455', // ISSC/Microchip transparent UART (common in cheap printers)
   '0000ff00-0000-1000-8000-00805f9b34fb',
-  '0000ffe0-0000-1000-8000-00805f9b34fb'
+  '0000ffe0-0000-1000-8000-00805f9b34fb', // HM-10/HM-18/HC-08 style serial module — very common in Daraz mini printers
+  '0000fee7-0000-1000-8000-00805f9b34fb',
+  'e7810a71-73ae-499d-8c15-faa9aef0c3f2'  // seen on some BLE thermal printer boards
 ];
 
 function setBtStatus(connected, label) {
@@ -1210,6 +1628,21 @@ async function connectBluetoothPrinter() {
         foundChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse) || null;
         if (foundChar) break;
       } catch (err) { /* this service isn't present on this device, try next */ }
+    }
+
+    // Fallback: some mini printers expose their write characteristic under a
+    // service UUID we don't have listed. Try walking every primary service.
+    if (!foundChar) {
+      try {
+        const services = await server.getPrimaryServices();
+        for (const service of services) {
+          try {
+            const chars = await service.getCharacteristics();
+            foundChar = chars.find(c => c.properties.write || c.properties.writeWithoutResponse) || null;
+            if (foundChar) break;
+          } catch (err) { /* skip unreadable service */ }
+        }
+      } catch (err) { /* getPrimaryServices not permitted without matching optionalServices */ }
     }
 
     if (!foundChar) {
@@ -1253,8 +1686,8 @@ function buildReceiptText(inv) {
   lines.push(`Date: ${inv.dateStr}`);
   lines.push(`Customer: ${inv.customer || 'Walk-in'}`);
   lines.push('-'.repeat(width));
-  inv.items.forEach(it => {
-    lines.push(it.name);
+  inv.items.forEach((it, idx) => {
+    lines.push(`${idx + 1}. ${it.name}`);
     lines.push(padLine(`${it.qty} x ${fmt(it.price)}`, fmt(it._lineTotal), width));
     if (it._discountAmt > 0) lines.push(padLine('  discount', '-' + fmt(it._discountAmt), width));
   });
@@ -1263,9 +1696,17 @@ function buildReceiptText(inv) {
   if (t.overallDiscAmt > 0) lines.push(padLine('Discount', '-' + fmt(t.overallDiscAmt), width));
   if (t.taxAmt > 0) lines.push(padLine(`Tax (${inv.taxPercent}%)`, fmt(t.taxAmt), width));
   lines.push(padLine('TOTAL', fmt(t.grandTotal), width));
+  if (t.received > 0) {
+    lines.push('-'.repeat(width));
+    lines.push(padLine('Cash received', fmt(t.received), width));
+    if (t.shortfall > 0) lines.push(padLine('Balance due', fmt(t.shortfall), width));
+    else lines.push(padLine('Change returned', fmt(t.changeDue), width));
+  }
   lines.push('-'.repeat(width));
   if (inv.business.footerNote) lines.push(center(inv.business.footerNote, width));
   lines.push(center('Thank you!', width));
+  lines.push('-'.repeat(width));
+  APP_WATERMARK_TEXT.split(' | ').forEach(part => lines.push(center(part, width)));
   return lines.join('\n') + '\n\n\n';
 }
 
@@ -1278,15 +1719,32 @@ function concatBytes(arrays) {
 }
 
 function buildEscPosBytes(inv) {
-  const ESC = 0x1B, GS = 0x1D;
+  const ESC = 0x1B;
   const encoder = new TextEncoder();
   const init = new Uint8Array([ESC, 0x40]);          // ESC @  - initialize
   const alignCenter = new Uint8Array([ESC, 0x61, 1]);
-  const cut = new Uint8Array([GS, 0x56, 0x00]);        // partial cut (best-effort, ignored by printers without a cutter)
   const feed = new Uint8Array([0x0A, 0x0A, 0x0A]);
 
   const text = encoder.encode(buildReceiptText(inv));
-  return concatBytes([init, alignCenter, text, feed, cut]);
+  return {
+    header: init,
+    body: concatBytes([alignCenter, text, feed])
+  };
+}
+
+/* Write bytes to the characteristic in small, MTU-safe chunks with a short
+   delay between each — this is the key fix for mini printers that were
+   dropping/garbling data with the old 150-byte chunk size. */
+async function writeBytesChunked(bytes, chunkSize) {
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    const chunk = bytes.slice(i, i + chunkSize);
+    if (btCharacteristic.properties.writeWithoutResponse) {
+      await btCharacteristic.writeValueWithoutResponse(chunk);
+    } else {
+      await btCharacteristic.writeValue(chunk);
+    }
+    await new Promise(r => setTimeout(r, 30));
+  }
 }
 
 async function printViaBluetooth() {
@@ -1294,25 +1752,34 @@ async function printViaBluetooth() {
     showToast('Connect a Bluetooth printer first.');
     return;
   }
-  const inv = state.viewingHistoryId
+  // Auto-save this sale to history before printing, so it's counted on the dashboard.
+  const saved = await persistCurrentInvoice({ silent: true });
+  const inv = saved || (state.viewingHistoryId
     ? state.history.find(h => h.id === state.viewingHistoryId)
-    : buildInvoiceSnapshot();
-  const bytes = buildEscPosBytes(inv);
-  const CHUNK = 150;
+    : buildInvoiceSnapshot());
+
+  const chunkSize = state.settings.btChunkSize || 20;
+  const { header, body } = buildEscPosBytes(inv);
+
   try {
-    for (let i = 0; i < bytes.length; i += CHUNK) {
-      const chunk = bytes.slice(i, i + CHUNK);
-      if (btCharacteristic.properties.writeWithoutResponse) {
-        await btCharacteristic.writeValueWithoutResponse(chunk);
-      } else {
-        await btCharacteristic.writeValue(chunk);
-      }
-      await new Promise(r => setTimeout(r, 25));
-    }
+    // Initialize command sent alone first — if the printer rejects it,
+    // we still fall through and try the receipt body.
+    try { await writeBytesChunked(header, chunkSize); } catch (err) { console.warn('Init command not accepted, continuing anyway.', err); }
+
+    await writeBytesChunked(body, chunkSize);
+
+    // Paper cut is sent last, in its own try/catch, since many mini
+    // printers (no cutter) don't support it and would otherwise abort
+    // the whole print job if sent inline with the receipt text.
+    try {
+      const cut = new Uint8Array([0x1D, 0x56, 0x00]); // GS V 0
+      await writeBytesChunked(cut, chunkSize);
+    } catch (err) { console.warn('Cut command not supported on this printer — ignored.', err); }
+
     showToast('Sent to Bluetooth printer.');
   } catch (err) {
     console.error(err);
-    showToast('Could not print: ' + (err.message || 'printer error'));
+    showToast('Could not print: ' + (err.message || 'printer error') + '. Try a smaller chunk size in Settings.');
   }
 }
 
@@ -1328,10 +1795,13 @@ async function init() {
   await loadAll();
   document.getElementById('overallDiscountValue').value = state.overallDiscount.value;
   document.getElementById('taxPercent').value = state.taxPercent;
+  document.getElementById('amountReceived').value = state.amountReceived || '';
 
   fillSettingsForm();
   renderCatalogDatalist();
   renderHistory();
+  renderDashboard();
+  applyDashboardVisibility();
   renderCart(); // also triggers renderPreview()
 
   wireAddItemForm();
@@ -1343,6 +1813,11 @@ async function init() {
   wireHistoryModal();
   wireSettingsForm();
   wireBluetooth();
+  wireDashboardToggle();
+
+  // Keep daily/weekly/monthly totals current even if the app is left open
+  // across a midnight/week/month rollover without a new sale being saved.
+  setInterval(renderDashboard, 60000);
 
   if (!navigator.bluetooth) {
     document.getElementById('connectBtBtn').disabled = true;
