@@ -1,7 +1,7 @@
 {
   "name": "DukanSlip",
   "short_name": "DukanSlip",
-  "start_url": "https://dilawarpro.github.io/Invoice/",
+  "start_url": "https://dilawarpro.github.io/invoice/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
